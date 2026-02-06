@@ -1,17 +1,11 @@
-import Navbar from "@/components/navbar";
-import SideNav from "@/components/side-panel";
 import { Suspense } from "react";
-import DashboardPage from "./components/DashBoardPage";
+import TasksPage from "./components/TasksPage";
 
-export default async function Dashboard() {
+export default async function Tasks() {
     return (
         <>
-            <Navbar />
             <Suspense fallback={<p>Loading...</p>}>
-                <div className="flex">
-                    <SideNav />
-                    <DashboardPage />
-                </div>
+                <TasksPage />
             </Suspense>
         </>
     )

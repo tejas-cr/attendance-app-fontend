@@ -1,13 +1,11 @@
-import Navbar from "@/components/navbar";
-import SideNav from "@/components/side-panel";
 import { Suspense } from "react";
-import DashboardPage from "./components/DashBoardPage";
+import EmployeesPage from "./components/EmployeesPage";
 
 export default async function Dashboard() {
     return (
         <>
             <Suspense fallback={<p>Loading...</p>}>
-                <DashboardPage />
+                <EmployeesPage />
             </Suspense>
         </>
     )

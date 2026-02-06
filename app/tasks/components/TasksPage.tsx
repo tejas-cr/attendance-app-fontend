@@ -1,7 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search, CheckCircle, Clock, AlertCircle, Users, ChevronDown, Calendar } from "lucide-react";
+import { Task } from "@/app/types/task";
+import { adminService } from "@/services/admin-services";
+import CreateTaskModal from "./CreateTaskModal";
+import { useRouter } from "next/navigation";
 
 const TASKS = [
   {
@@ -10,8 +14,8 @@ const TASKS = [
     description: "Compile financial and operational metrics for leadership review.",
     assignees: ["Rahul", "Neha"],
     deadline: "2026-02-02",
-    status: "completed",
-    priority: "high",
+    status: "COMPLETED",
+    priority: "HIGH",
   },
   {
     id: 2,
@@ -19,7 +23,7 @@ const TASKS = [
     description: "Resolve authentication failure on mobile devices.",
     assignees: ["Aman", "Neha"],
     deadline: "2026-04-02",
-    status: "pending",
+    status: "TODO",
     priority: "medium",
   },
   {
@@ -28,8 +32,8 @@ const TASKS = [
     description: "Resolve authentication failure on mobile devices.",
     assignees: ["Aman", "Neha"],
     deadline: "2026-02-06",
-    status: "in-progress",
-    priority: "low",
+    status: "IN_PROGRESS",
+    priority: "LOW",
   },
   {
     id: 4,
@@ -37,19 +41,39 @@ const TASKS = [
     description: "Resolve authentication failure on mobile devices.",
     assignees: ["Aman", "Neha"],
     deadline: "2026-02-06",
-    status: "pending",
-    priority: "high",
+    status: "TODO",
+    priority: "HIGH",
   },
 ];
 
 export default function TasksPage() {
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState<"all" | "pending" | "completed" | "in-progress">("all");
+  const [task, setTasks] = useState<Task[]>([]);
+  const [filter, setFilter] = useState<"all" | 'TODO' | 'IN_PROGRESS' | 'COMPLETED' | 'REVIEW'>("all");
 
-  const filteredTasks = TASKS.filter((task) => {
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+        const fetchTasks = async () => {
+            try {
+                const tasks = await adminService.getTasks();
+  
+                setTasks(Array.isArray(tasks) ? tasks : []);
+  
+            } catch (error) {
+                console.error("Failed to fetch users", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+  
+        fetchTasks();
+    }, []);
+
+
+  const filteredTasks = task.filter((task) => {
     const matchesSearch =
       task.title.toLowerCase().includes(query.toLowerCase()) ||
-      task.assignees.join(" ").toLowerCase().includes(query.toLowerCase());
+      task.description.toLowerCase().includes(query.toLowerCase());
 
     const matchesFilter = filter === "all" || task.status === filter;
 
@@ -58,9 +82,12 @@ export default function TasksPage() {
 
   return (
     <div className="w-full min-h-screen bg-accent p-8">
-      <h1 className="text-3xl font-black text-slate-800 mb-8">
-        Tasks
-      </h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-black text-slate-800">
+          Tasks
+        </h1>
+        <CreateTaskModal />
+      </div>
 
       {/* Controls */}
       <div className="bg-white rounded-2xl p-6 shadow-md border border-slate-100 mb-8">
@@ -83,14 +110,17 @@ export default function TasksPage() {
             <FilterButton active={filter === "all"} onClick={() => setFilter("all")}>
               ALL
             </FilterButton>
-            <FilterButton active={filter === "pending"} onClick={() => setFilter("pending")}>
+            <FilterButton active={filter === "TODO"} onClick={() => setFilter("TODO")}>
               TODO
             </FilterButton>
-            <FilterButton active={filter === "in-progress"} onClick={() => setFilter("in-progress")}>
+            <FilterButton active={filter === "IN_PROGRESS"} onClick={() => setFilter("IN_PROGRESS")}>
               IN PROGRESS
             </FilterButton>
-            <FilterButton active={filter === "completed"} onClick={() => setFilter("completed")}>
+            <FilterButton active={filter === "COMPLETED"} onClick={() => setFilter("COMPLETED")}>
               DONE
+            </FilterButton>
+            <FilterButton active={filter === "REVIEW"} onClick={() => setFilter("REVIEW")}>
+              REVIEW
             </FilterButton>
           </div>
         </div>
@@ -139,23 +169,14 @@ function FilterButton({
 }
 
 function TaskCard({ task }: { task: any }) {
-  const [open, setOpen] = useState(false);
+  const router = useRouter();
   const deadlineDate = new Date(task.deadline);
-  const today = new Date();
-  const daysLeft = Math.ceil(
-    (deadlineDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
-  );
-
-  const deadlineColor =
-    daysLeft < 0
-      ? "text-red-600"
-      : daysLeft <= 2
-      ? "text-yellow-600"
-      : "text-slate-600";
 
   return (
-    <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 shadow-xl shadow-slate-200/50 border border-white/50 cursor-pointer
-    hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
+    <div
+      onClick={() => router.push(`/tasks/${task.id}`)}
+      className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 shadow-xl shadow-slate-200/50 border border-white/50 cursor-pointer
+      hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
       <div className="flex items-start justify-between mb-4">
         <h3 className="font-bold text-slate-800">
           {task.title}
@@ -167,7 +188,7 @@ function TaskCard({ task }: { task: any }) {
         {task.description}
       </p>
 
-      <div className="flex items-center justify-between mt-auto">
+      {/* <div className="flex items-center justify-between mt-auto">
         <button
           onClick={() => setOpen(!open)}
           className="flex items-center gap-2 text-sm font-medium text-slate-600"
@@ -175,9 +196,9 @@ function TaskCard({ task }: { task: any }) {
           <Users size={16} />
           {task.assignees.length} members
         </button>
-      </div>
+      </div> */}
 
-      <div className="mt-4 rounded-xl bg-slate-50 p-3 text-sm text-slate-600">
+      {/* <div className="mt-4 rounded-xl bg-slate-50 p-3 text-sm text-slate-600">
         <ul className="space-y-1">
           {task.assignees.map((member: string) => (
             <li key={member} className="flex items-center gap-2">
@@ -186,7 +207,7 @@ function TaskCard({ task }: { task: any }) {
             </li>
           ))}
         </ul>
-      </div>
+      </div> */}
 
       <div className="flex items-center justify-between mt-4">
         {/* <StatusBadge status={task.status} /> */}
@@ -201,8 +222,8 @@ function TaskCard({ task }: { task: any }) {
 }
 
 function StatusIcon({ status }: { status: string }) {
-  if (status === "completed") return <CheckCircle className="text-green-600" size={18} />;
-  if (status === "in-progress") return <Clock className="text-yellow-500" size={18} />;
+  if (status === "COMPLETED") return <CheckCircle className="text-green-600" size={18} />;
+  if (status === "IN_PROGRESS") return <Clock className="text-yellow-500" size={18} />;
   return <AlertCircle className="text-red-500" size={18} />;
 }
 
@@ -222,9 +243,8 @@ function StatusBadge({ status }: { status: string }) {
 
 function PriorityBadge({ priority }: { priority: string }) {
   const map: any = {
-    high: "bg-red-50 text-red-600",
-    medium: "bg-yellow-50 text-yellow-600",
-    low: "bg-green-50 text-green-600",
+    HIGH: "bg-red-50 text-red-600",
+    LOW: "bg-green-50 text-green-600",
   };
 
   return (

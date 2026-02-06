@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { useAuth } from "@/context/auth-context"
 
 export default function SignIn() {
 
@@ -16,6 +17,7 @@ export default function SignIn() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
+    const { login } = useAuth();
     const router = useRouter()
 
     async function handleSubmit(e: React.FormEvent) {
@@ -25,9 +27,9 @@ export default function SignIn() {
         setLoading(true)
 
         try {
-            router.push("/dashboard")
-        } catch (err) {
-            setError("Error")
+            await login({ email, password });
+        } catch (err: any) {
+            setError(err.response?.data?.message || "Failed to sign in");
         } finally {
             setLoading(false)
         }
@@ -76,14 +78,14 @@ export default function SignIn() {
                         >
                             {loading ? "Logging In..." : "Sign In"}
                         </Button>
-                        <p className="text-center text-sm text-gray-600">
+                        {/* <p className="text-center text-sm text-gray-600">
                             Don't have an account?{" "}
                             <Link href="/sign-up"
                                 className="font-medium text-primary hover:underline"
                             >
                                 Sign Up
                             </Link>
-                        </p>
+                        </p> */}
                     </CardFooter>
                 </form>
 

@@ -1,12 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import Navbar from "@/components/navbar";
 
 export default function Home() {
   return (
     <div>
-      <Navbar />
       <main>
         {/* Hero Section*/}
         <section className="container mx-auto px-4 py-32">

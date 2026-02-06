@@ -1,16 +1,17 @@
 "use client"
 
-import { Briefcase } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 // import { getSession, signOut } from "@/lib/auth/auth";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import SignOutButton from "./sign-out.btn";
+import { useAuth } from "@/context/auth-context";
 
 
 
 export default function Navbar() {
+    const {user} = useAuth();
     return (
         <nav className="border-b border-gray-200 bg-white">
             <div className="container mx-auto flex h-16 items-center px-4 justify-between">
@@ -30,19 +31,6 @@ export default function Navbar() {
                 </div>
                 
                 <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-4">
-                        <Link href="/sign-in">
-                            <Button variant="ghost" className="text-gray-700 hover:text-black">
-                                Log In
-                            </Button>
-                        </Link>
-                        <Link href="/sign-up">
-                            <Button className="bg-primary hover:bg-primary/90">
-                                Sign Up
-                            </Button>
-                        </Link>
-
-                    </div>
                     {/* </Link> */}
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -54,7 +42,7 @@ export default function Navbar() {
                                     <AvatarFallback
                                         className="bg-primary text-white"
                                     >
-                                        {"A"}
+                                        {user?.name?.charAt(0).toUpperCase()}
                                     </AvatarFallback>
                                 </Avatar>
                             </Button>
@@ -64,10 +52,10 @@ export default function Navbar() {
                             <DropdownMenuLabel className="font-normal">
                                 <div className="flex flex-col space-y-1">
                                     <p className="text-sm font-medium leading-none">
-                                        {"Username"}
+                                        {user?.name}
                                     </p>
                                     <p className="text-xs leading-none text-muted-foreground">
-                                        {"example@gmail.com"}
+                                        {user?.email}
                                     </p>
                                 </div>
                             </DropdownMenuLabel>

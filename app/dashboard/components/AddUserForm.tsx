@@ -1,0 +1,204 @@
+"use client";
+
+import { useState } from "react";
+import { adminService } from "@/services/admin-services";
+import { CreateUserRequest } from "@/services/admin-services";
+import { UserRole } from "@/app/types/attendance";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+
+const initialState: CreateUserRequest = {
+  employeeId: "",
+  name: "",
+  email: "",
+  role: "JUNIOR",
+  teamId: "",
+  password: "",
+  shiftStart: "09:00",
+  shiftEnd: "18:00",
+};
+
+interface AddUserFormProps {
+  onSuccess?: () => void;
+}
+
+export default function AddUserForm({ onSuccess }: AddUserFormProps) {
+  const [form, setForm] = useState<CreateUserRequest>(initialState);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [tempPassword, setTempPassword] = useState<string | null>(null);
+
+  const updateField = (key: keyof CreateUserRequest, value: string) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccessMsg(null);
+
+    try {
+      const res = await adminService.createUser(form);
+
+      if (res.success) {
+        setSuccessMsg(res.message);
+        setTempPassword(res.data.tempPassword);
+        setForm(initialState);
+        onSuccess?.();
+      }
+    } catch (err: any) {
+      setError(err?.response?.data?.message || "Failed to create user");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6"
+    >
+        <div className="grid grid-cols-2 gap-4">
+            {/* Employee ID */}
+            <Field label="Employee ID">
+                <Input
+                value={form.employeeId}
+                onChange={(e) => updateField("employeeId", e.target.value)}
+                required
+                />
+            </Field>
+
+            {/* Name */}
+            <Field label="Name">
+                <Input
+                value={form.name}
+                onChange={(e) => updateField("name", e.target.value)}
+                required
+                />
+            </Field>
+
+        </div>
+
+        {/* Email */}
+        <Field label="Email">
+            <Input
+            type="email"
+            value={form.email}
+            onChange={(e) => updateField("email", e.target.value)}
+            required
+            />
+        </Field>
+    
+        <div className="grid grid-cols-2 gap-4">
+            {/* Role */}
+            <Field label="Role">
+                <Select
+                value={form.role}
+                onValueChange={(value) =>
+                    updateField("role", value as UserRole)
+                }
+                >
+                    <SelectTrigger>
+                        <SelectValue placeholder="Select role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="SENIOR">Senior</SelectItem>
+                        <SelectItem value="JUNIOR">Junior</SelectItem>
+                    </SelectContent>
+                </Select>
+            </Field>
+
+            {/* Team ID */}
+            <Field label="Team ID">
+                <Input
+                value={form.teamId}
+                onChange={(e) => updateField("teamId", e.target.value)}
+                required
+                />
+            </Field>
+        </div>
+        
+      {/* Password */}
+      <Field label="Password">
+        <Input
+          type="password"
+          value={form.password}
+          onChange={(e) => updateField("password", e.target.value)}
+          required
+        />
+      </Field>
+
+      {/* Shift */}
+      <div className="grid grid-cols-2 gap-4">
+        <Field label="Shift Start">
+          <Input
+            type="time"
+            value={form.shiftStart}
+            onChange={(e) => updateField("shiftStart", e.target.value)}
+          />
+        </Field>
+
+        <Field label="Shift End">
+          <Input
+            type="time"
+            value={form.shiftEnd}
+            onChange={(e) => updateField("shiftEnd", e.target.value)}
+          />
+        </Field>
+      </div>
+
+      {/* Error */}
+      {error && (
+        <p className="text-sm text-red-600">{error}</p>
+      )}
+
+      {/* Success */}
+      {successMsg && (
+        <div className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-700">
+          <p>{successMsg}</p>
+          {tempPassword && (
+            <p className="mt-1">
+              Temporary Password:{" "}
+              <span className="font-semibold">{tempPassword}</span>
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* Submit */}
+      <Button
+        type="submit"
+        className="w-full"
+        disabled={loading}
+      >
+        {loading ? "Creating..." : "Create User"}
+      </Button>
+    </form>
+  );
+}
+
+function Field({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <Label>{label}</Label>
+      {children}
+    </div>
+  );
+}
+
