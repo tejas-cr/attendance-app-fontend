@@ -37,13 +37,17 @@ export default function RootLayout({
         className={`${arimo.className} antialiased`}
       >
         <AuthProvider>
-          <Providers>
-            <Navbar/>
-            <div className="flex">
-              <SideNav />
-              {children}
+          <div className="flex h-screen">
+            <SideNav />
+            
+            <div className="flex flex-col flex-1 overflow-hidden">
+              <Navbar/>
+              
+              <main className="flex-1 overflow-y-auto">
+                {children}
+              </main>
             </div>
-          </Providers>
+          </div>
         </AuthProvider>
       </body>
     </html>
