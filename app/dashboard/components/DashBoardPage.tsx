@@ -3,16 +3,17 @@
 import { adminService } from "@/services/admin-services";
 import {
   Calendar,
-  CheckCircle,
-  CircleAlert,
   UserPlus,
   Users,
+  UserMinus,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { User } from "@/services/auth-service";
 import { countAttendance } from "@/app/utils/countAttendance";
 import { AttendanceMember } from "@/app/types/attendance";
 import { useRouter } from "next/navigation";
+import AttendanceDonut from "./AttendanceDonut";
+import EmployeeBar from "./EmployeeBar";
 
 export default function DashboardPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -46,23 +47,23 @@ export default function DashboardPage() {
       title: "Employee's",
       count: users.length - 1,
       icon: <Users size={28} />,
-      color: "text-[#4285F4]", // Google Blue
+      color: "text-[#4285F4]", 
       bg: "bg-[#4285F4]/10",
       path: "/employees",
     },
     {
       title: "Present",
       count: attendanceStats.present,
-      icon: <CheckCircle size={28} />,
-      color: "text-[#34A853]", // Google Green
+      icon: <UserPlus size={28} />,
+      color: "text-[#34A853]", 
       bg: "bg-[#34A853]/10",
       path: "/attendance",
     },
     {
       title: "Absent",
       count: attendanceStats.absent - 1,
-      icon: <CircleAlert size={28} />,
-      color: "text-[#DB4437]", // Google Red
+      icon: <UserMinus size={28} />,
+      color: "text-[#DB4437]",
       bg: "bg-[#DB4437]/10",
       path: "/attendance",
     },
@@ -71,9 +72,9 @@ export default function DashboardPage() {
   return (
     <main className="w-full bg-accent min-h-screen">
       {/* --- Modules Grid --- */}
-      <section className="relative mt-1 z-30 max-w-7xl mx-auto px-6 pb-20">
+      <section className="relative z-30 max-w-7xl mx-auto px-6 pb-20">
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2 bg-white px-5 py-2.5 rounded-xl border border-white/50 shadow-sm text-sm font-bold text-slate-600">
+          <div className="flex items-center gap-2 bg-white px-5 py-2.5 rounded-xl border border-white/50 shadow-sm text-sm font-bold text-slate-600 mt-3">
             <Calendar size={18} className="text-[#4285F4]" />
             <span>
               {new Date().toLocaleDateString("en-US", {
@@ -114,6 +115,20 @@ export default function DashboardPage() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Charts */}
+        <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <AttendanceDonut
+            present={attendanceStats.present}
+            absent={attendanceStats.absent - 1}
+          />
+
+          <EmployeeBar
+            total={users.length - 1}
+            present={attendanceStats.present}
+            absent={attendanceStats.absent - 1}
+          />
         </div>
       </section>
     </main>
