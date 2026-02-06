@@ -38,7 +38,7 @@ export default function EmployeePage() {
   }
 
   return (
-    <div className="w-full flex bg-accent">
+    <div className="w-full flex ">
       <div className="w-full bg-white rounded-3xl p-8 shadow-xl">
         <h1 className="text-3xl font-black text-slate-800 mb-4">
           {employee.name}

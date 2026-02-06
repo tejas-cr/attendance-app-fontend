@@ -64,7 +64,7 @@ export default function DashboardPage() {
     ];
 
     return (
-    <main className="w-full bg-accent min-h-screen">
+    <main className="w-full  min-h-screen">
 
       {/* --- Modules Grid --- */}
       <section className="relative mt-1 z-30 max-w-7xl mx-auto px-6 pb-20">

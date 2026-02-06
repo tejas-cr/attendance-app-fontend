@@ -48,7 +48,7 @@ export default function SideNav() {
       <div
         className={cn(
           isSidebarExpanded ? 'w-[200px]' : 'w-[68px]',
-          'border-r transition-all duration-300 ease-in-out transform hidden sm:flex h-full bg-accent',
+          'border-r transition-all duration-300 ease-in-out transform hidden sm:flex h-full',
         )}
       >
         <aside className="flex h-full flex-col w-full break-words px-4 overflow-x-hidden columns-1">
@@ -100,7 +100,7 @@ export default function SideNav() {
           <button
             type="button"
             className="absolute top-1/2 -translate-y-1/2 right-[-20px] flex h-10 w-10 items-center justify-center
-            border border-muted-foreground/20 rounded-full bg-accent shadow-md hover:shadow-lg
+            border border-muted-foreground/20 rounded-full  shadow-md hover:shadow-lg
             transition-shadow duration-300 ease-in-out"
             onClick={toggleSidebar}
           >

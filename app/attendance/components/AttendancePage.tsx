@@ -33,7 +33,7 @@ export default function PresentPage() {
     
 
   return (
-    <div className="w-full min-h-screen bg-accent p-8">
+    <div className="w-full min-h-screen  p-8">
       <h1 className="text-3xl font-black text-slate-800 mb-8">
         Employees
       </h1>

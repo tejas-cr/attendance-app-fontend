@@ -4,6 +4,12 @@ import "./globals.css";
 import { AuthProvider } from "@/context/auth-context";
 import Navbar from "@/components/navbar";
 import SideNav from "@/components/side-panel";
+import Providers from "@/context/providers";
+import { Arimo } from "next/font/google";
+
+const arimo = Arimo({
+  subsets: ["latin"],
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,14 +34,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${arimo.className} antialiased`}
       >
         <AuthProvider>
-          <Navbar/>
-          <div className="flex">
-            <SideNav />
-            {children}
-          </div>
+          <Providers>
+            <Navbar/>
+            <div className="flex">
+              <SideNav />
+              {children}
+            </div>
+          </Providers>
         </AuthProvider>
       </body>
     </html>

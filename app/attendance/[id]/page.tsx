@@ -39,7 +39,7 @@ export default function EmployeePage() {
   const { user, attendance } = employee;
 
   return (
-    <div className="w-full min-h-screen flex bg-accent">
+    <div className="w-full min-h-screen flex ">
       <div className="w-full mx-auto bg-white rounded-3xl p-8 shadow-xl">
         <div className="flex justify-between">
           {/* Today */}
