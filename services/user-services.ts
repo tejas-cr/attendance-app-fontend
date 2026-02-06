@@ -1,6 +1,7 @@
 import { AttendanceResponse } from '@/app/types/attendance';
 import api from '../lib/axios';
 import { User } from './auth-service';
+import { TeamStatusResponse } from '@/app/types/user';
 
 export interface PaginatedUsersResponse {
   success: boolean;
@@ -44,6 +45,6 @@ export const adminService = {
       }
     );
 
-    return response.data.data; // 👈 return only useful payload
+    return response.data.data;
   },
 };

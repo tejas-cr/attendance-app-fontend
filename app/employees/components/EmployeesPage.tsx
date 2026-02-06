@@ -5,6 +5,7 @@ import { User } from "@/services/auth-service";
 import { User2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import AddUserModal from "./AddUserModal";
 
 export default function EmployeesPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -34,9 +35,12 @@ export default function EmployeesPage() {
 
   return (
     <div className="w-full min-h-screen bg-accent p-8">
-      <h1 className="text-3xl font-black text-slate-800 mb-8">
-        Employees
-      </h1>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-3xl font-black text-slate-800">
+          Employees
+        </h1>
+        <AddUserModal />
+      </div>
 
       <div className="bg-white/90 backdrop-blur rounded-3xl shadow-xl border border-slate-100 p-8">
         <div className="grid grid-cols-1 lg:grid-cols-2  gap-10 relative">

@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { User } from "@/services/auth-service";
 import { countAttendance } from "@/app/utils/countAttendance";
 import { AttendanceMember } from "@/app/types/attendance";
-import AddUserModal from "./AddUserModal";
 import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
@@ -79,9 +78,6 @@ export default function DashboardPage() {
                 month: "long",
               })}
             </span>
-          </div>
-          <div className="p-6">
-            <AddUserModal />
           </div>
         </div>
 

@@ -18,7 +18,6 @@ export default function EmployeePage() {
     const fetchEmployee = async () => {
       try {
         const { data } = await adminService.getUserAttendanceById(id as string);
-        console.log(data);
         setEmployee(data);
       } catch (err) {
         console.error("Failed to fetch employee", err);

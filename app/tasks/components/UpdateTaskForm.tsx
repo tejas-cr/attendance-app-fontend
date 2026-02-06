@@ -1,7 +1,7 @@
 "use client";
 
 import { adminService } from "@/services/admin-services";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Task, TaskPriority, TaskStatus, UpdateTaskInput } from "@/app/types/task";
+import { User } from "@/services/auth-service";
 
 export default function UpdateTaskForm({
   task,
@@ -22,15 +23,16 @@ export default function UpdateTaskForm({
   onSuccess: () => void;
 }) {
   const [form, setForm] = useState<UpdateTaskInput>({
-  title: task.title,
-  description: task.description,
-  priority: task.priority,
-  status: task.status,
-  assignedToId: task.assignedToId,
-  deadline: task.deadline
-    ? new Date(task.deadline).toISOString().slice(0, 10)
-    : "",
-});
+    title: task.title,
+    description: task.description,
+    priority: task.priority,
+    status: task.status,
+    assignedToId: task.assignedToId,
+    deadline: task.deadline
+      ? new Date(task.deadline).toISOString().slice(0, 10)
+      : "",
+  });
+  const [users, setUsers] = useState<User[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -38,6 +40,18 @@ export default function UpdateTaskForm({
   const updateField = (key: keyof UpdateTaskInput, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const { users } = await adminService.getAllUsers();
+        setUsers(users);
+      } catch (error) {
+        console.error("Failed to fetch users", error);
+      }
+    }
+    fetchUsers();
+  },[])
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,13 +103,24 @@ export default function UpdateTaskForm({
             />
           </Field>
 
-          <Field label="Assign To (Employee ID)">
-            <Input
-              value={form.assignedToId || ""}
-              onChange={(e) =>
-                updateField("assignedToId", e.target.value)
+          <Field label="Assign To">
+            <Select
+              value={form.assignedToId}
+              onValueChange={(value) =>
+              updateField("assignedToId", value)
               }
-            />
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select employee" />
+              </SelectTrigger>
+              <SelectContent>
+                {users.map((user) => (
+                    <SelectItem key={user._id} value={user._id}>
+                    {user.name}
+                    </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </Field>
 
           <div className="grid grid-cols-3 gap-4">

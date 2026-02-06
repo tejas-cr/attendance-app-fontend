@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { adminService } from "@/services/admin-services";;
 import { CreateTaskRequest, TaskPriority } from "@/app/types/task";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { User } from "@/services/auth-service";
 
 const initialState: CreateTaskRequest = {
   title: "",
@@ -28,6 +29,7 @@ interface AddTaskFormProps {
 
 export default function AddTaskForm({ onSuccess }: AddTaskFormProps) {
   const [form, setForm] = useState<CreateTaskRequest>(initialState);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
@@ -35,6 +37,21 @@ export default function AddTaskForm({ onSuccess }: AddTaskFormProps) {
   const updateField = (key: keyof CreateTaskRequest, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const { users } = await adminService.getAllUsers();
+        setUsers(users);
+      } catch (err) {
+        console.error("Failed to fetch users", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +65,7 @@ export default function AddTaskForm({ onSuccess }: AddTaskFormProps) {
       if (res.success) {
         setSuccessMsg(res.message);
         setForm(initialState);
-        onSuccess?.();
+        setTimeout(() => onSuccess?.(), 2000);
       }
     } catch (err: any) {
       setError(err?.response?.data?.message || "Failed to create task");
@@ -80,13 +97,24 @@ export default function AddTaskForm({ onSuccess }: AddTaskFormProps) {
         </Field>
 
         {/* Assigned To */}
-        <Field label="Assign To (Employee ID)">
-            <Input
-            placeholder="Employee ID"
+        <Field label="Assign To">
+          <Select
             value={form.assignedToId}
-            onChange={(e) => updateField("assignedToId", e.target.value)}
-            required
-            />
+            onValueChange={(value) =>
+            updateField("assignedToId", value)
+            }
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select employee" />
+            </SelectTrigger>
+            <SelectContent>
+              {users.map((user) => (
+                  <SelectItem key={user._id} value={user._id}>
+                  {user.name}
+                  </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </Field>
 
         {/* Priority + Deadline */}
@@ -121,6 +149,9 @@ export default function AddTaskForm({ onSuccess }: AddTaskFormProps) {
         {/* Error */}
         {error && (
             <p className="text-sm text-red-600">{error}</p>
+        )}
+        {successMsg && (
+            <p className="text-sm text-green-600">{successMsg}</p>
         )}
 
         {/* Submit */}

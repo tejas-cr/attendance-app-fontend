@@ -14,6 +14,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { generateEmployeeId } from "@/app/utils/idGenerator";
+import { Eye, EyeOff } from "lucide-react";
 
 const initialState: CreateUserRequest = {
   employeeId: "",
@@ -32,6 +34,7 @@ interface AddUserFormProps {
 
 export default function AddUserForm({ onSuccess }: AddUserFormProps) {
   const [form, setForm] = useState<CreateUserRequest>(initialState);
+  const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
@@ -48,13 +51,14 @@ export default function AddUserForm({ onSuccess }: AddUserFormProps) {
     setSuccessMsg(null);
 
     try {
-      const res = await adminService.createUser(form);
+      const employeeId = generateEmployeeId();
+      const res = await adminService.createUser({...form, employeeId: employeeId});
 
       if (res.success) {
         setSuccessMsg(res.message);
         setTempPassword(res.data.tempPassword);
         setForm(initialState);
-        onSuccess?.();
+        setTimeout(() => onSuccess?.(), 2000);
       }
     } catch (err: any) {
       setError(err?.response?.data?.message || "Failed to create user");
@@ -69,35 +73,26 @@ export default function AddUserForm({ onSuccess }: AddUserFormProps) {
       className="space-y-6"
     >
         <div className="grid grid-cols-2 gap-4">
-            {/* Employee ID */}
-            <Field label="Employee ID">
-                <Input
-                value={form.employeeId}
-                onChange={(e) => updateField("employeeId", e.target.value)}
-                required
-                />
-            </Field>
-
-            {/* Name */}
-            <Field label="Name">
-                <Input
-                value={form.name}
-                onChange={(e) => updateField("name", e.target.value)}
-                required
-                />
-            </Field>
+          {/* Name */}
+          <Field label="Name">
+              <Input
+              value={form.name}
+              onChange={(e) => updateField("name", e.target.value)}
+              required
+              />
+          </Field>
+          {/* Email */}
+          <Field label="Email">
+              <Input
+              type="email"
+              value={form.email}
+              onChange={(e) => updateField("email", e.target.value)}
+              required
+              />
+          </Field>
 
         </div>
 
-        {/* Email */}
-        <Field label="Email">
-            <Input
-            type="email"
-            value={form.email}
-            onChange={(e) => updateField("email", e.target.value)}
-            required
-            />
-        </Field>
     
         <div className="grid grid-cols-2 gap-4">
             {/* Role */}
@@ -130,12 +125,26 @@ export default function AddUserForm({ onSuccess }: AddUserFormProps) {
         
       {/* Password */}
       <Field label="Password">
-        <Input
-          type="password"
-          value={form.password}
-          onChange={(e) => updateField("password", e.target.value)}
-          required
-        />
+        <div className="relative">
+          <Input
+            type={showPassword ? "text" : "password"}
+            value={form.password}
+            onChange={(e) => updateField("password", e.target.value)}
+            required
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700"
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+                {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                ) : (
+                    <Eye className="h-5 w-5" />
+                )}
+          </button>
+        </div>
       </Field>
 
       {/* Shift */}

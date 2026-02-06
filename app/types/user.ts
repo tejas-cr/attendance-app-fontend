@@ -1,4 +1,6 @@
+import { User } from "@/services/auth-service";
 import { UserRole } from "./attendance";
+
 
 export interface UserByIdResponse {
     success: boolean;
@@ -44,3 +46,29 @@ export type UserUpdateResponse = {
     }
 }
 
+export interface TeamStatusResponse {
+    success: boolean;
+    data: {
+        teamId: string;
+        members: {
+            _id: string;
+            employeeId: string;
+            name: string;
+            email: string;
+            role: UserRole;
+            teamId: string;
+            officeLat: number;
+            officeLng: number;
+            shiftStart: string;
+            shiftEnd: string;
+            createdAt: string;
+            updatedAt: string;
+            isClockedIn: boolean;
+            isInOffice: boolean;
+            attendanceStatus: string | null;
+            clockInTime: string | null;
+            totalWorkMinutes: number;
+        }[];
+        totalMembers: number;
+    }
+}

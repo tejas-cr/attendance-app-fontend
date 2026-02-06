@@ -104,7 +104,7 @@ export default function EmployeePage() {
           />
 
           {/* Form modal */}
-          <div className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl">
+          <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl">
             <div className="flex items-center justify-end">
               <button
                 onClick={() => setPasswordModalOpen(false)}

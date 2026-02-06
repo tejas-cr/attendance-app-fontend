@@ -2,7 +2,7 @@ import { AttendanceResponse, UserAttendanceById, UserAttendanceData, UserRole } 
 import api from '../lib/axios';
 import { User } from './auth-service';
 import { CreateTaskRequest, CreateTaskResponse, Task, TaskResponse, UpdateTaskInput, UpdateTaskResponse } from '@/app/types/task';
-import { UserByIdResponse, UserUpdateInput, UserUpdateResponse } from '@/app/types/user';
+import { TeamStatusResponse, UserByIdResponse, UserUpdateInput, UserUpdateResponse } from '@/app/types/user';
 
 interface PaginatedUsersResponse {
   success: boolean;
@@ -117,6 +117,7 @@ export const adminService = {
     const response = await api.get<TaskResponse>(
       "/tasks",
     );
+    console.log(response);
     return response.data.data;
   },
 
@@ -136,7 +137,14 @@ export const adminService = {
   async deleteTask(id: string) {
     const response = await api.delete(`/tasks/${id}`);
     return response;
-  }
+  },
+
+  async getTeams() {
+    const response = await api.get<TeamStatusResponse>(
+      "/users/team/status",
+    );
+    return response.data.data;
+  },
 
 
 

@@ -54,7 +54,7 @@ export default function UpdateUserPassword({
   };
 
   return (
-    <div className="w-full">
+    <div className="w-max-lg">
       <div className="w-full bg-white rounded-3xl p-8 shadow-xl space-y-8">
 
         {/* Update Form */}
