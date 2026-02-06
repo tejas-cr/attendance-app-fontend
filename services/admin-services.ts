@@ -75,10 +75,15 @@ export const adminService = {
     return response.data
   },
 
-  async updateUserPassword(id: string, password: string) {
+  async updateUserPassword(id: string, data: {password: string}) {
     const response = await api.patch<{success: boolean, message: string}>(
       `/admin/users/${id}/password`,
-      password
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
     )
     return response.data
   },
