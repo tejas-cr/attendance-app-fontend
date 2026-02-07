@@ -6,6 +6,7 @@ import { Task } from "@/app/types/task";
 import { adminService } from "@/services/admin-services";
 import CreateTaskModal from "./CreateTaskModal";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 
 const TASKS = [
   {
@@ -46,31 +47,28 @@ const TASKS = [
   },
 ];
 
+const fetchTasks = async () => {
+  try {
+    const tasks = await adminService.getTasks();
+    return tasks;
+  } catch (error) {
+    console.error("Failed to fetch users", error);
+  }
+};
 export default function TasksPage() {
   const [query, setQuery] = useState("");
-  const [task, setTasks] = useState<Task[]>([]);
   const [filter, setFilter] = useState<"all" | 'TODO' | 'IN_PROGRESS' | 'COMPLETED' | 'REVIEW'>("all");
+  
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["tasks"],
+    queryFn: fetchTasks,
+  })
 
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-        const fetchTasks = async () => {
-            try {
-                const tasks = await adminService.getTasks();
-  
-                setTasks(Array.isArray(tasks) ? tasks : []);
-  
-            } catch (error) {
-                console.error("Failed to fetch users", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-  
-        fetchTasks();
-    }, []);
+  if (isLoading) return <p>Loading...</p>
+  if (error) return <p>Error fetching tasks</p>
 
 
-  const filteredTasks = task.filter((task) => {
+  const filteredTasks = data?.filter((task) => {
     const matchesSearch =
       task.title.toLowerCase().includes(query.toLowerCase()) ||
       task.description.toLowerCase().includes(query.toLowerCase());
@@ -128,11 +126,11 @@ export default function TasksPage() {
 
       {/* Task Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredTasks.map((task) => (
+        {filteredTasks?.map((task: any) => (
           <TaskCard key={task.id} task={task} />
         ))}
 
-        {filteredTasks.length === 0 && (
+        {filteredTasks?.length === 0 && (
           <p className="text-slate-500 col-span-full text-center">
             No tasks found
           </p>

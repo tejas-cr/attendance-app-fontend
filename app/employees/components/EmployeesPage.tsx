@@ -2,10 +2,11 @@
 
 import { adminService } from "@/services/admin-services";
 import { User } from "@/services/auth-service";
-import { User2 } from "lucide-react";
+import { User2, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import AddUserModal from "./AddUserModal";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export default function EmployeesPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -117,69 +118,32 @@ function EmployeeCard({
 }) {
   const router = useRouter();
   return (
-    <div
+    <Card
       onClick={() => router.push(`/employees/${_id}`)}
-      className="
-        group relative overflow-hidden
-        rounded-xl border border-slate-200/60
-        bg-white/90 p-5
-        shadow-sm hover:shadow-xl
-        transition-all duration-300
-        hover:-translate-y-1
-      "
+      className="bg-white rounded-xs border-neutral-200 cursor-pointer hover:border-neutral-300 hover:shadow-md transition-all duration-200 ease-in-out relative overflow-hidden"
     >
-      <div className="flex items-start gap-4">
-        <div
-          className="
-            flex h-12 w-12 items-center justify-center
-            rounded-xl bg-slate-100 text-slate-600
-            group-hover:bg-[#4285F4]/10 group-hover:text-[#4285F4]
-            transition-all duration-300
-          "
-        >
-          <User2 size={20} />
-        </div>
-
-        {/* Content */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between gap-2">
-            <p
-              className="
-                truncate font-semibold text-slate-800
-                group-hover:text-[#4285F4]
-                transition-colors
-              "
-            >
-              {name}
-            </p>
-
-            {/* Team badge */}
-            {teamId && (
-              <span
-                className="
-                  absolute right-1 top-1
-                  rounded-full bg-slate-100 px-2.5 py-0.5
-                  text-xs font-medium text-slate-600
-                  group-hover:bg-[#4285F4]/10 group-hover:text-[#4285F4]
-                  transition-colors
-                "
-              >
-                {teamId}
-              </span>
-            )}
-          </div>
-
-          <p
-            className="
-              mt-1 truncate text-sm text-slate-500
-              group-hover:text-slate-600
-              transition-colors
-            "
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between">
+          <div
+            className="w-12 h-12 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-600 group-hover:bg-neutral-200 group-hover:text-neutral-900 transition-colors duration-200"
           >
-            {email}
-          </p>
+            <User2 size={24} />
+          </div>
+          {teamId && (
+            <span className="inline-flex items-center rounded-full bg-neutral-100 px-2.5 py-0.5 text-xs font-medium text-neutral-600 group-hover:bg-neutral-200 transition-colors duration-200">
+              {teamId}
+            </span>
+          )}
         </div>
-      </div>
-    </div>
+      </CardHeader>
+      <CardContent>
+        <h3 className="text-lg font-semibold text-neutral-900 group-hover:text-neutral-700 transition-colors duration-200 truncate">
+          {name}
+        </h3>
+        <p className="text-sm text-neutral-500 truncate mt-1 group-hover:text-neutral-600 transition-colors duration-200">
+          {email}
+        </p>
+      </CardContent>
+    </Card>
   );
 }

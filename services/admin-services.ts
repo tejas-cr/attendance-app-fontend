@@ -117,13 +117,12 @@ export const adminService = {
     const response = await api.get<TaskResponse>(
       "/tasks",
     );
-    console.log(response);
     return response.data.data;
   },
 
   async getTaskById(id: string) {
     const response = await api.get<{sucess: boolean, data: Task}>(`/tasks/${id}`);
-    return response.data;
+    return response.data.data;
   },
 
   async updateTask(id: string, data: UpdateTaskInput) {

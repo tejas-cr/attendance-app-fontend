@@ -6,34 +6,25 @@ import { useParams } from "next/navigation";
 import UpdateTaskForm from "../components/UpdateTaskForm";
 import { Button } from "@/components/ui/button";
 import DeleteTaskModal from "../components/DeleteTaskModal";
+import { useQuery } from "@tanstack/react-query";
 
 export default function TaskPage() {
   const { id } = useParams();
-  const [task, setTask] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  useEffect(() => {
-    const fetchTask = async () => {
-      try {
-        const {data} = await adminService.getTaskById(id as string);
-        setTask(data);
-      } catch (err) {
-        console.error("Failed to fetch task", err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["tasks", id],
+    queryFn: () => adminService.getTaskById(id as string),
+   
+  });
 
-    fetchTask();
-  }, [id]);
 
-  if (loading) {
+  if (isLoading) {
     return <div className="p-8">Loading...</div>;
   }
 
-  if (!task) {
+  if (!data) {
     return <div className="p-8">Task not found</div>;
   }
 
@@ -49,17 +40,17 @@ export default function TaskPage() {
           }`}
         >
           <h1 className="text-3xl font-black text-slate-800 mb-4">
-            {task.title}
+            {data.title}
           </h1>
 
           <div className="space-y-3 text-slate-600">
-            <p><strong>Id:</strong> {task.id}</p>
-            <p><strong>Description:</strong> {task.description}</p>
-            <p><strong>Status:</strong> {task.status}</p>
-            <p><strong>Priority:</strong> {task.priority}</p>
-            <p><strong>Deadline:</strong> {task.deadline}</p>
-            <p><strong>Created At:</strong> {task.createdAt}</p>
-            <p><strong>Updated At:</strong> {task.updatedAt}</p>
+            <p><strong>Id:</strong> {data.id}</p>
+            <p><strong>Description:</strong> {data.description}</p>
+            <p><strong>Status:</strong> {data.status}</p>
+            <p><strong>Priority:</strong> {data.priority}</p>
+            <p><strong>Deadline:</strong> {data.deadline}</p>
+            <p><strong>Created At:</strong> {data.createdAt}</p>
+            <p><strong>Updated At:</strong> {data.updatedAt}</p>
           </div>
           
           <div className="flex justify-end gap-4">
@@ -69,7 +60,7 @@ export default function TaskPage() {
               Update Task
             </Button>
             <DeleteTaskModal
-              taskId={task.id}
+              taskId={data.id}
               onSuccess={() => setIsDeleting(false)}
             />
           </div>
@@ -96,7 +87,7 @@ export default function TaskPage() {
               </div>
 
               <UpdateTaskForm
-                task={task}
+                task={data}
                 onSuccess={() => setIsEditing(false)}
               />
             </div>
@@ -105,7 +96,7 @@ export default function TaskPage() {
 
         {isDeleting && (
           <DeleteTaskModal
-            taskId={task.id}
+            taskId={data.id}
             onSuccess={() => setIsDeleting(false)}
           />
         )}
