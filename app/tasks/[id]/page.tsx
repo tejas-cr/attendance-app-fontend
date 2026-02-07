@@ -11,7 +11,6 @@ import { useQuery } from "@tanstack/react-query";
 export default function TaskPage() {
   const { id } = useParams();
   const [isEditing, setIsEditing] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["tasks", id],
@@ -29,13 +28,18 @@ export default function TaskPage() {
   }
 
   return (
-    <div className="w-full min-h-screen flex  items-center justify-center p-8">
-      {/* Card container */}
-      <div className="relative w-full max-w-2xl">
+    <main className="w-full min-h-screen bg-accent px-6 py-10">
+      <div className="max-w-3xl mx-auto space-y-6">
+        <button
+          onClick={() => router.back()}
+          className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition"
+        >
+          <ArrowLeft size={18} />
+          Back
+        </button>
 
-        {/* Task Card */}
         <div
-          className={`bg-white rounded-3xl p-8 shadow-xl transition-all ${
+          className={`relative bg-white rounded-3xl p-8 shadow-xl transition ${
             isEditing ? "blur-sm scale-[0.98]" : ""
           }`}
         >
@@ -66,25 +70,20 @@ export default function TaskPage() {
           </div>
         </div>
 
-        {/* Overlay */}
         {isEditing && (
-          <div className="absolute inset-0 z-50 flex items-center justify-center">
-            {/* Dark backdrop */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
             <div
-              className="absolute inset-0 bg-black/40 rounded-3xl"
+              className="absolute inset-0 bg-black/40"
               onClick={() => setIsEditing(false)}
             />
 
-            {/* Form modal */}
             <div className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl">
-              <div className="flex items-center justify-end">
-                <button
-                  onClick={() => setIsEditing(false)}
-                  className="text-slate-400 hover:text-slate-600 text-xl mr-4 mt-4"
-                >
-                  ✕
-                </button>
-              </div>
+              <button
+                onClick={() => setIsEditing(false)}
+                className="absolute top-4 right-4 text-slate-400 hover:text-slate-700"
+              >
+                ✕
+              </button>
 
               <UpdateTaskForm
                 task={data}
@@ -101,6 +100,23 @@ export default function TaskPage() {
           />
         )}
       </div>
+    </main>
+  );
+}
+
+function Detail({
+  label,
+  value,
+  full = false,
+}: {
+  label: string;
+  value: string;
+  full?: boolean;
+}) {
+  return (
+    <div className={full ? "sm:col-span-2" : ""}>
+      <p className="text-xs font-semibold text-slate-400 mb-1">{label}</p>
+      <p className="text-slate-700">{value}</p>
     </div>
   );
 }

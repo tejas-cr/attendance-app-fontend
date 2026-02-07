@@ -1,5 +1,3 @@
-import Navbar from "@/components/navbar";
-import SideNav from "@/components/side-panel";
 import { Suspense } from "react";
 import DashboardPage from "./components/DashBoardPage";
 

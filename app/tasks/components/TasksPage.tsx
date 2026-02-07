@@ -1,7 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Search, CheckCircle, Clock, AlertCircle, Users, ChevronDown, Calendar } from "lucide-react";
+import {
+  Search,
+  CheckCircle,
+  Clock,
+  AlertCircle,
+  Users,
+  ChevronDown,
+  Calendar,
+} from "lucide-react";
 import { Task } from "@/app/types/task";
 import { adminService } from "@/services/admin-services";
 import CreateTaskModal from "./CreateTaskModal";
@@ -12,7 +20,8 @@ const TASKS = [
   {
     id: 1,
     title: "Prepare monthly report",
-    description: "Compile financial and operational metrics for leadership review.",
+    description:
+      "Compile financial and operational metrics for leadership review.",
     assignees: ["Rahul", "Neha"],
     deadline: "2026-02-02",
     status: "COMPLETED",
@@ -79,21 +88,21 @@ export default function TasksPage() {
   });
 
   return (
-    <div className="w-full min-h-screen  p-8">
+    <div className="w-full min-h-screen p-12">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-black text-slate-800">
-          Tasks
-        </h1>
+        <h1 className="text-3xl font-black text-slate-800">Tasks</h1>
         <CreateTaskModal />
       </div>
 
       {/* Controls */}
       <div className="bg-white rounded-2xl p-6 shadow-md border border-slate-100 mb-8">
         <div className="flex flex-col lg:flex-row lg:items-center gap-4 justify-between">
-
           {/* Search */}
           <div className="relative w-full lg:w-1/2">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              size={18}
+            />
             <input
               type="text"
               placeholder="Search tasks or assignee..."
@@ -105,19 +114,34 @@ export default function TasksPage() {
 
           {/* Filters */}
           <div className="flex flex-wrap gap-2">
-            <FilterButton active={filter === "all"} onClick={() => setFilter("all")}>
+            <FilterButton
+              active={filter === "all"}
+              onClick={() => setFilter("all")}
+            >
               ALL
             </FilterButton>
-            <FilterButton active={filter === "TODO"} onClick={() => setFilter("TODO")}>
+            <FilterButton
+              active={filter === "TODO"}
+              onClick={() => setFilter("TODO")}
+            >
               TODO
             </FilterButton>
-            <FilterButton active={filter === "IN_PROGRESS"} onClick={() => setFilter("IN_PROGRESS")}>
+            <FilterButton
+              active={filter === "IN_PROGRESS"}
+              onClick={() => setFilter("IN_PROGRESS")}
+            >
               IN PROGRESS
             </FilterButton>
-            <FilterButton active={filter === "COMPLETED"} onClick={() => setFilter("COMPLETED")}>
+            <FilterButton
+              active={filter === "COMPLETED"}
+              onClick={() => setFilter("COMPLETED")}
+            >
               DONE
             </FilterButton>
-            <FilterButton active={filter === "REVIEW"} onClick={() => setFilter("REVIEW")}>
+            <FilterButton
+              active={filter === "REVIEW"}
+              onClick={() => setFilter("REVIEW")}
+            >
               REVIEW
             </FilterButton>
           </div>
@@ -174,11 +198,10 @@ function TaskCard({ task }: { task: any }) {
     <div
       onClick={() => router.push(`/tasks/${task.id}`)}
       className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 shadow-xl shadow-slate-200/50 border border-white/50 cursor-pointer
-      hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
+      hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 relative overflow-hidden"
+    >
       <div className="flex items-start justify-between mb-4">
-        <h3 className="font-bold text-slate-800">
-          {task.title}
-        </h3>
+        <h3 className="font-bold text-slate-800">{task.title}</h3>
         <StatusIcon status={task.status} />
       </div>
 
@@ -220,8 +243,10 @@ function TaskCard({ task }: { task: any }) {
 }
 
 function StatusIcon({ status }: { status: string }) {
-  if (status === "COMPLETED") return <CheckCircle className="text-green-600" size={18} />;
-  if (status === "IN_PROGRESS") return <Clock className="text-yellow-500" size={18} />;
+  if (status === "COMPLETED")
+    return <CheckCircle className="text-green-600" size={18} />;
+  if (status === "IN_PROGRESS")
+    return <Clock className="text-yellow-500" size={18} />;
   return <AlertCircle className="text-red-500" size={18} />;
 }
 
@@ -246,7 +271,9 @@ function PriorityBadge({ priority }: { priority: string }) {
   };
 
   return (
-    <span className={`text-xs font-semibold px-3 py-1 rounded-full ${map[priority]}`}>
+    <span
+      className={`text-xs font-semibold px-3 py-1 rounded-full ${map[priority]}`}
+    >
       {priority.toUpperCase()}
     </span>
   );
