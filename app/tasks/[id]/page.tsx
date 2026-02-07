@@ -20,7 +20,6 @@ export default function TaskPage() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["tasks", id],
     queryFn: () => adminService.getTaskById(id as string),
-   
   });
 
 

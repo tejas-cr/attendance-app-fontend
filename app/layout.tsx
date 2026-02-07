@@ -40,17 +40,17 @@ export default function RootLayout({
       >
         <AuthProvider>
           <Providers>
-          <div className="flex h-screen">
-            <SideNav />
-            
-            <div className="flex flex-col flex-1 overflow-hidden">
-              <Navbar/>
+            <div className="flex h-screen">
+              <SideNav />
               
-              <main className="flex-1 overflow-y-auto">
-                {children}
-              </main>
+              <div className="flex flex-col flex-1 overflow-hidden">
+                <Navbar/>
+                
+                <main className="flex-1 overflow-y-auto">
+                  {children}
+                </main>
+              </div>
             </div>
-          </div>
           </Providers>
         </AuthProvider>
       </body>
