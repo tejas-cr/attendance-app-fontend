@@ -39,6 +39,7 @@ export default function RootLayout({
         className={`${arimo.className} antialiased`}
       >
         <AuthProvider>
+          <Providers>
           <div className="flex h-screen">
             <SideNav />
             
@@ -50,6 +51,7 @@ export default function RootLayout({
               </main>
             </div>
           </div>
+          </Providers>
         </AuthProvider>
       </body>
     </html>

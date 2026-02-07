@@ -7,10 +7,15 @@ import UpdateTaskForm from "../components/UpdateTaskForm";
 import { Button } from "@/components/ui/button";
 import DeleteTaskModal from "../components/DeleteTaskModal";
 import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 
 export default function TaskPage() {
   const { id } = useParams();
   const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const router = useRouter();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["tasks", id],
@@ -28,10 +33,10 @@ export default function TaskPage() {
   }
 
   return (
-    <main className="w-full min-h-screen bg-accent px-6 py-10">
+    <main className="w-full min-h-screen px-6 py-10">
       <div className="max-w-3xl mx-auto space-y-6">
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push("/tasks")}
           className="flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition"
         >
           <ArrowLeft size={18} />
