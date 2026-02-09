@@ -12,6 +12,7 @@ import { User } from "@/services/auth-service";
 import { countAttendance } from "@/app/utils/countAttendance";
 import { AttendanceMember } from "@/app/types/attendance";
 import { useRouter } from "next/navigation";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import AttendanceDonut from "./AttendanceDonut";
 import EmployeeBar from "./EmployeeBar";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -70,8 +71,9 @@ export default function DashboardPage() {
     },
   ];
 
-  return (
-    <main className="w-full bg-neutral-50 min-h-screen">
+    return (
+    <main className="w-full min-h-screen ">
+
       {/* --- Modules Grid --- */}
       <section className="relative z-30 max-w-7xl mx-auto px-6 pb-20">
         <div className="flex items-center justify-between mb-6">
@@ -92,7 +94,7 @@ export default function DashboardPage() {
             <Card
               key={index}
               onClick={() => { item.path ? router.push(item.path) : null }}
-              className="group bg-neutral-100 border-neutral-200 cursor-pointer hover:border-neutral-300 hover:shadow-md transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2"
+              className="group bg-white rounded-xs border-neutral-200 cursor-pointer hover:border-neutral-200 hover:shadow-md transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2"
               tabIndex={item.path ? 0 : -1}
               role={item.path ? "button" : undefined}
             >

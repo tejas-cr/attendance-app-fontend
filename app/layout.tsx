@@ -7,6 +7,8 @@ import SideNav from "@/components/side-panel";
 import Providers from "@/context/providers";
 import { Arimo } from "next/font/google";
 
+
+
 const arimo = Arimo({
   subsets: ["latin"],
 });

@@ -14,22 +14,68 @@ import CreateTaskModal from "./CreateTaskModal";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 
+const TASKS = [
+  {
+    id: 1,
+    title: "Prepare monthly report",
+    description:
+      "Compile financial and operational metrics for leadership review.",
+    assignees: ["Rahul", "Neha"],
+    deadline: "2026-02-02",
+    status: "COMPLETED",
+    priority: "HIGH",
+  },
+  {
+    id: 2,
+    title: "Fix login bug",
+    description: "Resolve authentication failure on mobile devices.",
+    assignees: ["Aman", "Neha"],
+    deadline: "2026-04-02",
+    status: "TODO",
+    priority: "medium",
+  },
+  {
+    id: 3,
+    title: "Design dashboard UI",
+    description: "Resolve authentication failure on mobile devices.",
+    assignees: ["Aman", "Neha"],
+    deadline: "2026-02-06",
+    status: "IN_PROGRESS",
+    priority: "LOW",
+  },
+  {
+    id: 4,
+    title: "API integration",
+    description: "Resolve authentication failure on mobile devices.",
+    assignees: ["Aman", "Neha"],
+    deadline: "2026-02-06",
+    status: "TODO",
+    priority: "HIGH",
+  },
+];
+
 const fetchTasks = async () => {
+  try {
     const tasks = await adminService.getTasks();
     return tasks;
+  } catch (error) {
+    console.error("Failed to fetch users", error);
+  }
 };
-
 export default function TasksPage() {
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState<
-    "all" | "TODO" | "IN_PROGRESS" | "COMPLETED" | "REVIEW"
-  >("all");
-
-  const { data: tasks, isLoading, error } = useQuery({
+  const [filter, setFilter] = useState<"all" | 'TODO' | 'IN_PROGRESS' | 'COMPLETED' | 'REVIEW'>("all");
+  
+  const { data, isLoading, error } = useQuery({
     queryKey: ["tasks"],
     queryFn: fetchTasks,
-  });
-  const filteredTasks = tasks?.filter((task: any) => {
+  })
+
+  if (isLoading) return <p>Loading...</p>
+  if (error) return <p>Error fetching tasks</p>
+
+
+  const filteredTasks = data?.filter((task) => {
     const matchesSearch =
       task.title.toLowerCase().includes(query.toLowerCase()) ||
       task.description.toLowerCase().includes(query.toLowerCase());
@@ -102,7 +148,7 @@ export default function TasksPage() {
 
       {/* Task Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredTasks?.map((task) => (
+        {filteredTasks?.map((task: any) => (
           <TaskCard key={task.id} task={task} />
         ))}
 
