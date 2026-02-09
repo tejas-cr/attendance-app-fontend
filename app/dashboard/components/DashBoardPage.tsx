@@ -14,6 +14,7 @@ import { AttendanceMember } from "@/app/types/attendance";
 import { useRouter } from "next/navigation";
 import AttendanceDonut from "./AttendanceDonut";
 import EmployeeBar from "./EmployeeBar";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export default function DashboardPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -70,7 +71,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <main className="w-full bg-accent min-h-screen">
+    <main className="w-full bg-neutral-50 min-h-screen">
       {/* --- Modules Grid --- */}
       <section className="relative z-30 max-w-7xl mx-auto px-6 pb-20">
         <div className="flex items-center justify-between mb-6">
@@ -88,37 +89,38 @@ export default function DashboardPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {stats.map((item, index) => (
-            <div
+            <Card
               key={index}
-              onClick={() => {
-                item.path ? router.push(item.path) : null;
-              }}
-              className="group bg-white/90 backdrop-blur-sm rounded-3xl p-8 shadow-xl shadow-slate-200/50 border border-white/50 cursor-pointer hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 relative overflow-hidden"
+              onClick={() => { item.path ? router.push(item.path) : null }}
+              className="group bg-neutral-100 border-neutral-200 cursor-pointer hover:border-neutral-300 hover:shadow-md transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2"
+              tabIndex={item.path ? 0 : -1}
+              role={item.path ? "button" : undefined}
             >
-              <div className="flex items-start justify-between mb-8">
-                <div
-                  className={`w-16 h-16 rounded-2xl flex items-center justify-center ${item.bg} ${item.color} transition-transform group-hover:scale-110 duration-300`}
-                >
-                  {item.icon}
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div
+                    className={`w-12 h-12 rounded-lg flex items-center justify-center ${item.bg} ${item.color} transition-transform group-hover:scale-105 duration-200`}
+                  >
+                    {item.icon}
+                  </div>
+                  <div className="text-right">
+                    <p className="text-2xl font-semibold text-neutral-900 tabular-nums">
+                      {loading ? "..." : item.count}
+                    </p>
+                  </div>
                 </div>
-
-                <div className="text-right">
-                  <p className="text-3xl font-extrabold text-slate-800 group-hover:text-[#4285F4] transition-colors">
-                    {loading ? "..." : item.count}
-                  </p>
-                </div>
-              </div>
-              <div>
-                <h3 className="text-xl font-black text-slate-800 mb-2 group-hover:text-[#4285F4] transition-colors">
+              </CardHeader>
+              <CardContent className="pt-0">
+                <h3 className="text-sm font-medium text-neutral-600 group-hover:text-neutral-900 transition-colors duration-200">
                   {item.title}
                 </h3>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
 
         {/* Charts */}
-        <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
           <AttendanceDonut
             present={attendanceStats.present}
             absent={attendanceStats.absent - 1}

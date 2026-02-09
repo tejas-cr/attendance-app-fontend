@@ -25,19 +25,19 @@ export interface Task {
 
 export interface TaskData {
     tasks: Task[],
-    pagination: {
-        page: number,
-        limit: number,
-        total: number,
-        totalPages: number,
-        hasNext: boolean,
-        hasPrev: boolean
-    }
 }
 
 export interface TaskResponse {
-    success: boolean,
-    data: TaskData
+    success: boolean;
+    data: Task[];
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    }
 }
 
 export interface CreateTaskRequest {

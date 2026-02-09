@@ -17,9 +17,8 @@ export default function DeleteTaskModal({
 
     const handleDelete = async () => {
         try {
-            const res = await adminService.deleteTask(taskId);
-            console.log(res)
-            onSuccess?.();
+            await adminService.deleteTask(taskId);
+            setTimeout(() => onSuccess?.(), 2000);
             setOpen(false);
         } catch (error) {
             console.error("Error deleting task:", error);

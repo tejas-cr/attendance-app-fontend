@@ -14,6 +14,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Task, TaskPriority, TaskStatus, UpdateTaskInput } from "@/app/types/task";
 import { User } from "@/services/auth-service";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function UpdateTaskForm({
   task,
@@ -36,6 +37,8 @@ export default function UpdateTaskForm({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  const queryClient = useQueryClient();
 
   const updateField = (key: keyof UpdateTaskInput, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -61,6 +64,7 @@ export default function UpdateTaskForm({
 
     try {
         const res = await adminService.updateTask(task.id, form);
+        queryClient.invalidateQueries({ queryKey: ["tasks"] });
 
         if (res.success) {
             setSuccess(res.message);

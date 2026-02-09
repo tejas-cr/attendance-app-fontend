@@ -117,7 +117,6 @@ export const adminService = {
     const response = await api.get<TaskResponse>(
       "/tasks",
     );
-    console.log(response);
     return response.data.data;
   },
 

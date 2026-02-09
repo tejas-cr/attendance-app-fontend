@@ -1,85 +1,35 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Search,
   CheckCircle,
   Clock,
   AlertCircle,
-  Users,
-  ChevronDown,
   Calendar,
 } from "lucide-react";
 import { Task } from "@/app/types/task";
 import { adminService } from "@/services/admin-services";
 import CreateTaskModal from "./CreateTaskModal";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 
-const TASKS = [
-  {
-    id: 1,
-    title: "Prepare monthly report",
-    description:
-      "Compile financial and operational metrics for leadership review.",
-    assignees: ["Rahul", "Neha"],
-    deadline: "2026-02-02",
-    status: "COMPLETED",
-    priority: "HIGH",
-  },
-  {
-    id: 2,
-    title: "Fix login bug",
-    description: "Resolve authentication failure on mobile devices.",
-    assignees: ["Aman", "Neha"],
-    deadline: "2026-04-02",
-    status: "TODO",
-    priority: "medium",
-  },
-  {
-    id: 3,
-    title: "Design dashboard UI",
-    description: "Resolve authentication failure on mobile devices.",
-    assignees: ["Aman", "Neha"],
-    deadline: "2026-02-06",
-    status: "IN_PROGRESS",
-    priority: "LOW",
-  },
-  {
-    id: 4,
-    title: "API integration",
-    description: "Resolve authentication failure on mobile devices.",
-    assignees: ["Aman", "Neha"],
-    deadline: "2026-02-06",
-    status: "TODO",
-    priority: "HIGH",
-  },
-];
+const fetchTasks = async () => {
+    const tasks = await adminService.getTasks();
+    return tasks;
+};
 
 export default function TasksPage() {
   const [query, setQuery] = useState("");
-  const [task, setTasks] = useState<Task[]>([]);
   const [filter, setFilter] = useState<
     "all" | "TODO" | "IN_PROGRESS" | "COMPLETED" | "REVIEW"
   >("all");
 
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const tasks = await adminService.getTasks();
-
-        setTasks(Array.isArray(tasks) ? tasks : []);
-      } catch (error) {
-        console.error("Failed to fetch users", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTasks();
-  }, []);
-
-  const filteredTasks = task.filter((task) => {
+  const { data: tasks, isLoading, error } = useQuery({
+    queryKey: ["tasks"],
+    queryFn: fetchTasks,
+  });
+  const filteredTasks = tasks?.filter((task: any) => {
     const matchesSearch =
       task.title.toLowerCase().includes(query.toLowerCase()) ||
       task.description.toLowerCase().includes(query.toLowerCase());
@@ -152,11 +102,11 @@ export default function TasksPage() {
 
       {/* Task Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredTasks.map((task) => (
+        {filteredTasks?.map((task) => (
           <TaskCard key={task.id} task={task} />
         ))}
 
-        {filteredTasks.length === 0 && (
+        {filteredTasks?.length === 0 && (
           <p className="text-slate-500 col-span-full text-center">
             No tasks found
           </p>
