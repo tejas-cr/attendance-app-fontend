@@ -2,8 +2,8 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { User2 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { adminService } from "@/services/admin-services";
+import { useQuery } from "@tanstack/react-query";
+import { getEmployessAdmin } from "@/lib/actions/employee.admin.actions";
 
 type User = {
   _id: string;
@@ -13,24 +13,19 @@ type User = {
 
 export default function EmployeeSidebar() {
   const params = useParams();
-  const id = params?.id;
-  
-  const [users, setUsers] = useState<User[]>([])
-  
-  useEffect(() => {
-    if (!id) return;
+  const id = params?.id as string | undefined;
 
-    adminService.getAllUsers()
-    .then(({ users }: any) => {
-      setUsers(Array.isArray(users) ? users : []);
-    })
-    .catch((err) => {
-      console.error("Failed to fetch users", err);
-    })
-  }, [id])
+  const {data, isLoading, error} = useQuery({
+    queryKey: ["employees"],
+    queryFn: getEmployessAdmin
+  })
 
   if (!id) return null;
+  if (isLoading) return <aside className="w-64 px-4 py-6">Loading...</aside>;
+  if (error) return <aside className="w-64 px-4 py-6">Failed to load users</aside>;
   
+  const users = data?.users ?? [];
+
   const seniors = users.filter(u => u.role === "SENIOR");
   const juniors = users.filter(u => u.role === "JUNIOR");
   
@@ -50,7 +45,7 @@ function SidebarSection ({
     activeId,
   }: {
     title: string;
-    users: User[];
+    users: any;
     activeId?: any;
   }) {
     const router = useRouter();
@@ -62,7 +57,7 @@ function SidebarSection ({
       </p>
 
       <ul className="space-y-1">
-        {users.map((u) => {
+        {users.map((u: User) => {
           const isActive = activeId === u._id;
 
           return (

@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import AddUserModal from "./AddUserModal";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { NoTasksErrorPage } from "@/app/tasks/components/NoTaskErrorPage";
+import { PageSkeleton } from "@/components/skeletons/PageSkeleton";
 
 export default function EmployeesPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -24,18 +26,23 @@ export default function EmployeesPage() {
           } catch (error) {
               console.error("Failed to fetch users", error);
           } finally {
-              setLoading(false);
+              setTimeout(() => {
+                setLoading(false);
+              }, 2000);
           }
       };
 
       fetchUsers();
   }, []);
 
+  if (loading) return <PageSkeleton />
+  if (error) return <NoTasksErrorPage />
+
   const seniors = users.filter((user) => user.role === 'SENIOR');
   const juniors = users.filter((user) => user.role === 'JUNIOR');  
 
   return (
-    <div className="w-full min-h-screen  p-8">
+    <div className="w-full min-h-screen p-8">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-black text-slate-800">
           Employees
@@ -43,10 +50,10 @@ export default function EmployeesPage() {
         <AddUserModal />
       </div>
 
-      <div className="bg-white/90 backdrop-blur rounded-3xl shadow-xl border border-slate-100 p-8">
+      {/* <div className="bg-white/90 backdrop-blur rounded-xs shadow-xl border border-slate-100 p-8"> */}
         <div className="grid grid-cols-1 lg:grid-cols-2  gap-10 relative">
 
-          <div className="hidden lg:block absolute left-1/2 top-0 h-full w-px bg-slate-200" />
+          {/* <div className="hidden lg:block absolute left-1/2 top-0 h-full w-px bg-slate-200" /> */}
           {/* Seniors */}
           <Section
             title="Senior Employees"
@@ -67,7 +74,7 @@ export default function EmployeesPage() {
             ))}
           </Section>
         </div>
-      </div>
+      {/* </div> */}
     </div>
   );
 }
@@ -85,7 +92,7 @@ function Section({
 }) {
   return (
     <div>
-      <div className="flex items-center justify-between mb-12">
+      <div className="flex items-center justify-start mb-12 gap-4">
         <h2
         className={`text-xl font-extrabold text-slate-700 border-l-4 pl-4 ${accent}`}
         >
@@ -120,7 +127,7 @@ function EmployeeCard({
   return (
     <Card
       onClick={() => router.push(`/employees/${_id}`)}
-      className="bg-white rounded-xs border-neutral-200 cursor-pointer hover:border-neutral-300 hover:shadow-md transition-all duration-200 ease-in-out relative overflow-hidden"
+      className="bg-white rounded-sm border-neutral-100 cursor-pointer hover:border-neutral-200 hover:shadow-md hover:-translate-y-1 transition-all duration-200 ease-in-out relative overflow-hidden"
     >
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">

@@ -36,10 +36,10 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         // If refresh fails, redirect to login or handle session expiration
-        // In a real app, you might want to redirect via Next.js router or window.location
         if (typeof window !== 'undefined') {
-             // Optional: emit an event or redirect
-             // window.location.href = '/login';
+             if (window.location.pathname !== '/sign-in') {
+                 window.location.href = '/sign-in';
+             }
         }
         return Promise.reject(refreshError);
       }

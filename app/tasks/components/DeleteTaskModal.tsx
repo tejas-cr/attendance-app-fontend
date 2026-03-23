@@ -32,7 +32,7 @@ export default function DeleteTaskModal({
             onOpenChange={setOpen}
         >
             <DialogTrigger asChild>
-                <Button className="bg-red-500 hover:bg-red-600">
+                <Button className="bg-red-500 hover:bg-red-600 rounded-xs">
                     Delete
                 </Button>
             </DialogTrigger>

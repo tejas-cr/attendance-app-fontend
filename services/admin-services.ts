@@ -59,6 +59,7 @@ export const adminService = {
 
   async getAllUsers() {
     const response = await api.get<PaginatedUsersResponse>("/admin/users");
+    console.log("this is response", response)
     return response.data.data;
   },
 

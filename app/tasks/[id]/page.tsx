@@ -1,7 +1,7 @@
 "use client";
 
 import { adminService } from "@/services/admin-services";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams } from "next/navigation";
 import UpdateTaskForm from "../components/UpdateTaskForm";
 import { Button } from "@/components/ui/button";
@@ -42,7 +42,7 @@ export default function TaskPage() {
         </button>
 
         <div
-          className={`relative bg-white/80 backdrop-blur rounded-3xl p-8 shadow-lg border border-slate-200 transition-all ${
+          className={`relative bg-white/80 backdrop-blur rounded-sm p-8 shadow-lg border border-slate-200 transition-all ${
             isEditing ? "blur-sm scale-[0.98]" : "hover:shadow-xl"
           }`}
         >
@@ -68,7 +68,7 @@ export default function TaskPage() {
           </div>
 
           <div className="flex justify-end gap-3 mt-8">
-            <Button className="rounded-xl" onClick={() => setIsEditing(true)}>
+            <Button className="rounded-xs" onClick={() => setIsEditing(true)}>
               Update Task
             </Button>
 
@@ -86,7 +86,7 @@ export default function TaskPage() {
               onClick={() => setIsEditing(false)}
             />
 
-            <div className="relative w-full max-w-xl bg-white rounded-2xl shadow-2xl p-6 animate-in fade-in zoom-in">
+            <div className="relative w-full max-w-xl bg-white rounded-sm shadow-2xl p-6 animate-in fade-in zoom-in">
               <button
                 onClick={() => setIsEditing(false)}
                 className="absolute top-4 right-4 text-slate-400 hover:text-slate-700"
@@ -137,7 +137,7 @@ function PriorityBadge({ level }: { level: string }) {
         colors[level?.toLowerCase()] || "bg-slate-100 text-slate-600"
       }`}
     >
-      {level} Priority
+      {level} 
     </span>
   );
 }

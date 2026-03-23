@@ -1,6 +1,7 @@
 "use client";
 
 import { UserAttendance } from "@/app/types/attendance";
+import { PageSkeleton } from "@/components/skeletons/PageSkeleton";
 import { adminService } from "@/services/admin-services";
 import { User2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -12,25 +13,30 @@ export default function PresentPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-      const fetchUsers = async () => {
-          try {
-              const { users } = await adminService.getUserAttendance();
+    const fetchUsers = async () => {
+      try {
+        const { users } = await adminService.getUserAttendance();
 
-              setUsers(Array.isArray(users) ? users : []);
+        setUsers(Array.isArray(users) ? users : []);
 
-          } catch (error) {
-              console.error("Failed to fetch users", error);
-          } finally {
-              setLoading(false);
-          }
-      };
+      } catch (error) {
+        console.error("Failed to fetch users", error);
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
+      }
+    };
 
       fetchUsers();
   }, []);
 
   const present = users.filter((user) => user.today.status === "PRESENT");
   const absent = users.filter((user) => user.today.status === "ABSENT");
-    
+
+  if (loading) {
+    return <PageSkeleton />;
+  } 
 
   return (
     <div className="w-full min-h-screen  p-8">
@@ -38,10 +44,10 @@ export default function PresentPage() {
         Employees
       </h1>
 
-      <div className="bg-white/90 backdrop-blur rounded-3xl shadow-xl border border-slate-100 p-8">
+      {/* <div className="bg-white/90 backdrop-blur rounded-3xl shadow-xl border border-slate-100 p-8"> */}
         <div className="grid grid-cols-1 lg:grid-cols-2  gap-10 relative">
 
-          <div className="hidden lg:block absolute left-1/2 top-0 h-full w-px bg-slate-200" />
+          {/* <div className="hidden lg:block absolute left-1/2 top-0 h-full w-px bg-slate-200" /> */}
           <Section
             title="Present Employees"
             count={present.length}
@@ -60,7 +66,7 @@ export default function PresentPage() {
             ))}
           </Section>
         </div>
-      </div>
+      {/* </div> */}
     </div>
   );
 }
@@ -80,7 +86,7 @@ function Section({
 }) {
   return (
     <div>
-      <div className="flex items-center justify-between mb-12">
+      <div className="flex items-center justify-start mb-12 gap-4">
         <h2
         className={`text-xl font-extrabold text-slate-700 border-l-4 pl-4 ${accent}`}
         >
@@ -117,20 +123,21 @@ function EmployeeCard({
       onClick={() => router.push(`/attendance/${id}`)}
       className="
         group relative overflow-hidden
-        rounded-xl border border-slate-200/60
+        rounded-sm border border-neutral-100
         bg-white/90 p-5
         shadow-sm hover:shadow-xl
         transition-all duration-300
         hover:-translate-y-1
+        hover:border-neutral-200
       "
     >
       <div className="flex items-start gap-4">
         <div
           className="
             flex h-12 w-12 items-center justify-center
-            rounded-xl bg-slate-100 text-slate-600
+            rounded-sm bg-slate-100 text-slate-600
             group-hover:bg-[#4285F4]/10 group-hover:text-[#4285F4]
-            transition-all duration-300
+            transition-colors duration-300
           "
         >
           <User2 size={20} />

@@ -13,46 +13,8 @@ import { adminService } from "@/services/admin-services";
 import CreateTaskModal from "./CreateTaskModal";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-
-const TASKS = [
-  {
-    id: 1,
-    title: "Prepare monthly report",
-    description:
-      "Compile financial and operational metrics for leadership review.",
-    assignees: ["Rahul", "Neha"],
-    deadline: "2026-02-02",
-    status: "COMPLETED",
-    priority: "HIGH",
-  },
-  {
-    id: 2,
-    title: "Fix login bug",
-    description: "Resolve authentication failure on mobile devices.",
-    assignees: ["Aman", "Neha"],
-    deadline: "2026-04-02",
-    status: "TODO",
-    priority: "medium",
-  },
-  {
-    id: 3,
-    title: "Design dashboard UI",
-    description: "Resolve authentication failure on mobile devices.",
-    assignees: ["Aman", "Neha"],
-    deadline: "2026-02-06",
-    status: "IN_PROGRESS",
-    priority: "LOW",
-  },
-  {
-    id: 4,
-    title: "API integration",
-    description: "Resolve authentication failure on mobile devices.",
-    assignees: ["Aman", "Neha"],
-    deadline: "2026-02-06",
-    status: "TODO",
-    priority: "HIGH",
-  },
-];
+import { PageSkeleton } from "@/components/skeletons/PageSkeleton";
+import { NoTasksErrorPage } from "./NoTaskErrorPage";
 
 const fetchTasks = async () => {
   try {
@@ -71,8 +33,8 @@ export default function TasksPage() {
     queryFn: fetchTasks,
   })
 
-  if (isLoading) return <p>Loading...</p>
-  if (error) return <p>Error fetching tasks</p>
+  if (isLoading) return <PageSkeleton />
+  if (error) return <NoTasksErrorPage />
 
 
   const filteredTasks = data?.filter((task) => {
@@ -86,14 +48,14 @@ export default function TasksPage() {
   });
 
   return (
-    <div className="w-full min-h-screen p-12">
+    <div className="w-full min-h-screen p-8 border">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-black text-slate-800">Tasks</h1>
         <CreateTaskModal />
       </div>
 
       {/* Controls */}
-      <div className="bg-white rounded-2xl p-6 shadow-md border border-slate-100 mb-8">
+      <div className="bg-white rounded-2xl pb-20 shadow-md">
         <div className="flex flex-col lg:flex-row lg:items-center gap-4 justify-between">
           {/* Search */}
           <div className="relative w-full lg:w-1/2">
@@ -195,8 +157,8 @@ function TaskCard({ task }: { task: any }) {
   return (
     <div
       onClick={() => router.push(`/tasks/${task.id}`)}
-      className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 shadow-xl shadow-slate-200/50 border border-white/50 cursor-pointer
-      hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 relative overflow-hidden"
+      className="bg-white/90 backdrop-blur-sm rounded-sm p-6 shadow-xl shadow-slate-200/50 border border-neutral-100 cursor-pointer
+      hover:-translate-y-1 hover:shadow-2xl hover:border-neutral-200 transition-all duration-300 relative overflow-hidden"
     >
       <div className="flex items-start justify-between mb-4">
         <h3 className="font-bold text-slate-800">{task.title}</h3>

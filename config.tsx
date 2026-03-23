@@ -1,6 +1,6 @@
 import { usePathname } from 'next/navigation';
 
-import { Briefcase, CheckCircle, ClipboardList, Home, Settings, Users } from 'lucide-react';
+import { CheckCircle, ClipboardList, Home, Settings, Users } from 'lucide-react';
 
 export const NavItems = () => {
   const pathname = usePathname();

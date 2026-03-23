@@ -55,7 +55,7 @@ export default function UpdateUserPassword({
 
   return (
     <div className="w-max-lg">
-      <div className="w-full bg-white rounded-3xl p-8 shadow-xl space-y-8">
+      <div className="w-full bg-white rounded-sm p-6 shadow-sm space-y-6">
 
         {/* Update Form */}
         <form onSubmit={handleUpdate} className="space-y-6">
@@ -69,7 +69,7 @@ export default function UpdateUserPassword({
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => updateField(e.target.value)}
-                    className="pr-10"
+                    className="border border-slate-300"
                 />
                 <button
                     type="button"

@@ -1,7 +1,6 @@
 "use client";
 
 import { Fragment, useEffect, useState } from "react";
-import SignOutButton from "./sign-out.btn";
 import Link from "next/link";
 
 import {

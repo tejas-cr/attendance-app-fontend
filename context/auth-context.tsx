@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, authService } from '../services/auth-service';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 interface AuthContextType {
   user: User | null;
@@ -18,10 +18,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     checkUser();
   }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      if (!user && pathname !== '/sign-in') {
+        router.push('/sign-in');
+      } else if (user && pathname === '/sign-in') {
+        router.push('/dashboard');
+      }
+    }
+  }, [user, loading, pathname, router]);
 
   async function checkUser() {
     try {

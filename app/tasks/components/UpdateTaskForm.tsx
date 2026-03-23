@@ -23,8 +23,6 @@ export default function UpdateTaskForm({
   task: Task;
   onSuccess: () => void;
 }) {
-
-  const queryClient = useQueryClient();
    
   const [form, setForm] = useState<UpdateTaskInput>({
     title: task.title,

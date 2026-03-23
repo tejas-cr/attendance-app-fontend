@@ -14,6 +14,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { TeamStatusResponse, UserByIdResponse, UserUpdateInput } from "@/app/types/user";
 import { UserRole } from "@/app/types/attendance";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 export default function UpdateUserForm({
@@ -33,6 +34,7 @@ export default function UpdateUserForm({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   const updateField = (key: keyof UserUpdateInput, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -46,6 +48,7 @@ export default function UpdateUserForm({
 
     try {
         const res = await adminService.updateUser(data._id, form);
+        queryClient.invalidateQueries({ queryKey: ["employees"] });
 
         if (res.success) {
             setSuccess(res.message);
@@ -61,7 +64,7 @@ export default function UpdateUserForm({
 
   return (
     <div className="w-full">
-      <div className="w-full bg-white rounded-3xl p-8 shadow-xl space-y-8">
+      <div className="w-full bg-white rounded-sm p-8 shadow-xl space-y-8">
 
         {/* Update Form */}
         <form onSubmit={handleUpdate} className="space-y-6">
@@ -85,43 +88,41 @@ export default function UpdateUserForm({
             />
           </Field>
 
-          <div className="grid grid-cols-1 gap-4">
-            <Field label="Role">
-              <Select
-                value={form.role}
-                onValueChange={(value) =>
-                  updateField("role", value as UserRole)
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="SENIOR">SENIOR</SelectItem>
-                  <SelectItem value="JUNIOR">JUNIOR</SelectItem>
-                </SelectContent>
-              </Select>
+          <Field label="Role">
+            <Select
+              value={form.role}
+              onValueChange={(value) =>
+                updateField("role", value as UserRole)
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="SENIOR">SENIOR</SelectItem>
+                <SelectItem value="JUNIOR">JUNIOR</SelectItem>
+              </SelectContent>
+            </Select>
+          </Field>
+          <div className="grid grid-cols-2 gap-4">
+            <Field label="Shift Start">
+              <Input
+                type="time"
+              value={form.shiftStart}
+              onChange={(e) =>
+                updateField("shiftStart", e.target.value)
+              }
+            />
             </Field>
-            <div className="grid grid-cols-2 gap-4">
-              <Field label="Shift Start">
-                <Input
-                  type="time"
-                value={form.shiftStart}
+            <Field label="Shift End">
+              <Input
+                type="time"
+                value={form.shiftEnd}
                 onChange={(e) =>
-                  updateField("shiftStart", e.target.value)
+                  updateField("shiftEnd", e.target.value)
                 }
               />
-              </Field>
-              <Field label="Shift End">
-                <Input
-                  type="time"
-                  value={form.shiftEnd}
-                  onChange={(e) =>
-                    updateField("shiftEnd", e.target.value)
-                  }
-                />
-              </Field>
-            </div>
+            </Field>
           </div>
 
           {error && <p className="text-sm text-red-600">{error}</p>}

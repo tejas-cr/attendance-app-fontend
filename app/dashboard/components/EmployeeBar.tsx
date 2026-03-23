@@ -25,7 +25,8 @@ export default function EmployeeBar({
   ];
 
   return (
-    <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-white/50">
+    <div className="bg-white/90 backdrop-blur-sm rounded-sm p-6 shadow-xl border border-neutral-100 
+    hover:border-neutral-200 hover:shadow-md hover:-translate-y-1 transition-all duration-200 ease-in-out">
       <h3 className="text-lg font-bold text-slate-800 mb-4">
         Employees Status
       </h3>

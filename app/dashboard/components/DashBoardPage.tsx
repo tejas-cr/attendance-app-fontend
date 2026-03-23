@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import AttendanceDonut from "./AttendanceDonut";
 import EmployeeBar from "./EmployeeBar";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { DashboardSkeleton } from "@/components/skeletons/DashboardSkeleton";
 
 export default function DashboardPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -35,7 +35,9 @@ export default function DashboardPage() {
       } catch (error) {
         console.error("Failed to fetch users", error);
       } finally {
-        setLoading(false);
+        setTimeout(() => {
+          setLoading(false);
+        }, 2000);
       }
     };
 
@@ -47,9 +49,9 @@ export default function DashboardPage() {
   const stats = [
     {
       title: "Employee's",
-      count: users.length - 1,
+      count: users.length,
       icon: <Users size={28} />,
-      color: "text-[#4285F4]", 
+      color: "text-[#4285F4]",
       bg: "bg-[#4285F4]/10",
       path: "/employees",
     },
@@ -57,21 +59,24 @@ export default function DashboardPage() {
       title: "Present",
       count: attendanceStats.present,
       icon: <UserPlus size={28} />,
-      color: "text-[#34A853]", 
+      color: "text-[#34A853]",
       bg: "bg-[#34A853]/10",
       path: "/attendance",
     },
     {
       title: "Absent",
-      count: attendanceStats.absent - 1,
+      count: attendanceStats.absent,
       icon: <UserMinus size={28} />,
       color: "text-[#DB4437]",
       bg: "bg-[#DB4437]/10",
       path: "/attendance",
     },
   ];
+  if (loading) {
+    return <DashboardSkeleton />;
+  }
 
-    return (
+  return (
     <main className="w-full min-h-screen ">
 
       {/* --- Modules Grid --- */}
@@ -94,14 +99,17 @@ export default function DashboardPage() {
             <Card
               key={index}
               onClick={() => { item.path ? router.push(item.path) : null }}
-              className="group bg-white rounded-xs border-neutral-200 cursor-pointer hover:border-neutral-200 hover:shadow-md transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2"
+              className="group bg-white rounded-sm border-neutral-100 cursor-pointer hover:border-neutral-200 
+              hover:shadow-md hover:-translate-y-1
+              transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2
+              "
               tabIndex={item.path ? 0 : -1}
               role={item.path ? "button" : undefined}
             >
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div
-                    className={`w-12 h-12 rounded-lg flex items-center justify-center ${item.bg} ${item.color} transition-transform group-hover:scale-105 duration-200`}
+                    className={`w-12 h-12 rounded-lg flex items-center justify-center ${item.bg} ${item.color} transition-transform duration-200`}
                   >
                     {item.icon}
                   </div>
@@ -113,7 +121,7 @@ export default function DashboardPage() {
                 </div>
               </CardHeader>
               <CardContent className="pt-0">
-                <h3 className="text-sm font-medium text-neutral-600 group-hover:text-neutral-900 transition-colors duration-200">
+                <h3 className="text-sm font-medium text-neutral-600">
                   {item.title}
                 </h3>
               </CardContent>

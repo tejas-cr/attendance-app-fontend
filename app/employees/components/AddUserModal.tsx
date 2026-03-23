@@ -19,7 +19,9 @@ export default function AddUserModal() {
     <Dialog open={open} onOpenChange={setOpen}>
       {/* Trigger Button */}
       <DialogTrigger asChild>
-        <Button>
+        <Button
+        className="rounded-xs"
+        >
             <UserPlus />
             Add User
         </Button>

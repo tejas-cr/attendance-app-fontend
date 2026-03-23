@@ -7,7 +7,7 @@ export default async function AttendanceLayout({
 }) {
   return (
     <div className="flex w-full min-h-screen">
-      <main className="flex-1 p-8">{children}</main>
+      <main className="flex-1">{children}</main>
       <AttendanceSidebar />
     </div>
   );
