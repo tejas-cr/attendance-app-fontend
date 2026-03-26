@@ -4,6 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { User2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { getEmployessAdmin } from "@/lib/actions/employee.admin.actions";
+import { useEffect } from "react";
 
 type User = {
   _id: string;
@@ -17,7 +18,11 @@ export default function EmployeeSidebar() {
 
   const {data, isLoading, error} = useQuery({
     queryKey: ["employees"],
-    queryFn: getEmployessAdmin
+    queryFn: async () => {
+      const accessToken = window.localStorage.getItem('access_token') ?? '';
+      const refreshToken = window.localStorage.getItem('refresh_token') ?? '';
+      return getEmployessAdmin(accessToken, refreshToken);
+    },
   })
 
   if (!id) return null;
@@ -25,6 +30,11 @@ export default function EmployeeSidebar() {
   if (error) return <aside className="w-64 px-4 py-6">Failed to load users</aside>;
   
   const users = data?.users ?? [];
+
+  useEffect(() => {
+    if (data?.access_token) window.localStorage.setItem('access_token', data.access_token);
+    if (data?.refresh_token) window.localStorage.setItem('refresh_token', data.refresh_token);
+  }, [data?.access_token, data?.refresh_token]);
 
   const seniors = users.filter(u => u.role === "SENIOR");
   const juniors = users.filter(u => u.role === "JUNIOR");

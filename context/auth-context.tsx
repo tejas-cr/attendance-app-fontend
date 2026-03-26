@@ -49,12 +49,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function login(credentials: { email: string; password: string }) {
     const { data } = await authService.login(credentials);
     setUser(data.user);
+    if (typeof window !== 'undefined') {
+      if (data.access_token) window.localStorage.setItem('access_token', data.access_token);
+      if (data.refresh_token) window.localStorage.setItem('refresh_token', data.refresh_token);
+    }
     router.push('/dashboard');
   }
 
   async function register(data: { name: string; email: string; password: string }) {
     const { data: responseData } = await authService.register(data);
     setUser(responseData.user);
+    if (typeof window !== 'undefined') {
+      if (responseData.access_token) window.localStorage.setItem('access_token', responseData.access_token);
+      if (responseData.refresh_token) window.localStorage.setItem('refresh_token', responseData.refresh_token);
+    }
     router.push('/dashboard');
   }
 
@@ -63,6 +71,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await authService.logout();
     } catch (error) {
       console.error("Logout failed", error);
+    }
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem('access_token');
+      window.localStorage.removeItem('refresh_token');
     }
     setUser(null);
     router.push('/sign-in');
