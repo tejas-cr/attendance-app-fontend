@@ -18,6 +18,7 @@ export default function EmployeePage() {
   const { data: employee, isLoading, error } = useQuery({
     queryKey: ["employees", id],
     queryFn: () => adminService.getUserById(id as string).then(res => res.data),
+    enabled: !!id, 
   });
 
   if (isLoading) {
