@@ -25,16 +25,17 @@ export default function EmployeeSidebar() {
     },
   })
 
+  
+  
+  useEffect(() => {
+    if (data?.access_token) window.localStorage.setItem('access_token', data.access_token);
+    if (data?.refresh_token) window.localStorage.setItem('refresh_token', data.refresh_token);
+  }, [data?.access_token, data?.refresh_token]);
   if (!id) return null;
   if (isLoading) return <aside className="w-64 px-4 py-6">Loading...</aside>;
   if (error) return <aside className="w-64 px-4 py-6">Failed to load users</aside>;
   
   const users = data?.users ?? [];
-
-  useEffect(() => {
-    if (data?.access_token) window.localStorage.setItem('access_token', data.access_token);
-    if (data?.refresh_token) window.localStorage.setItem('refresh_token', data.refresh_token);
-  }, [data?.access_token, data?.refresh_token]);
 
   const seniors = users.filter(u => u.role === "SENIOR");
   const juniors = users.filter(u => u.role === "JUNIOR");

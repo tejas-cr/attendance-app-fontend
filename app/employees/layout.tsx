@@ -6,7 +6,7 @@ export default async function EmployeeLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex w-full min-h-screen ">
+    <div suppressHydrationWarning className="flex w-full min-h-screen ">
       <main className="flex-1">{children}</main>
       <EmployeeSidebar />
     </div>
