@@ -15,44 +15,45 @@ interface PaginatedUsersResponse {
 }
 
 export interface CreateUserRequest {
-    employeeId: string,
-    name: string,
-    email: string,
-    role: UserRole,
-    teamId: string,
-    password: string,
-    shiftStart: string,
-    shiftEnd: string
+  employeeId: string,
+  name: string,
+  email: string,
+  phone: string,
+  role: UserRole,
+  teamId: string,
+  password: string,
+  shiftStart: string,
+  shiftEnd: string
 }
 
 export interface CreateUserResponse {
+  success: boolean,
+  message: string,
+  data: {
     success: boolean,
-    message: string,
-    data: {
-        success: boolean,
-        user: {
-            employeeId: string,
-            name: string,
-            email: string,
-            role: UserRole,
-            teamId: string,
-            shiftStart: string,
-            shiftEnd: string,
-            _id: string,
-            createdAt: string,
-            updatedAt: string,
-            __v: number
-        },
-        tempPassword: string
-    }
+    user: {
+      employeeId: string,
+      name: string,
+      email: string,
+      role: UserRole,
+      teamId: string,
+      shiftStart: string,
+      shiftEnd: string,
+      _id: string,
+      createdAt: string,
+      updatedAt: string,
+      __v: number
+    },
+    tempPassword: string
+  }
 }
 
 
 export const adminService = {
   async createUser(data: CreateUserRequest) {
     const response = await api.post<CreateUserResponse>(
-        '/admin/users',
-        data
+      '/admin/users',
+      data
     );
     return response.data;
   },
@@ -76,8 +77,8 @@ export const adminService = {
     return response.data
   },
 
-  async updateUserPassword(id: string, data: {password: string}) {
-    const response = await api.patch<{success: boolean, message: string}>(
+  async updateUserPassword(id: string, data: { password: string }) {
+    const response = await api.patch<{ success: boolean, message: string }>(
       `/admin/users/${id}/password`,
       data,
       {
@@ -97,19 +98,20 @@ export const adminService = {
   },
 
   async getUserAttendance() {
-    const response = await api.get<{success: boolean, data: UserAttendanceData}>("/attendance/users");
+    const response = await api.get<{ success: boolean, data: UserAttendanceData }>("/attendance/users");
     return response.data.data;
   },
 
   async getUserAttendanceById(id: string) {
     const response = await api.get<UserAttendanceById>(`/attendance/user/${id}`);
+    console.log("this is response", response)
     return response.data;
   },
 
   async createTask(data: CreateTaskRequest) {
     const response = await api.post<CreateTaskResponse>(
-        '/tasks',
-        data
+      '/tasks',
+      data
     );
     return response.data;
   },
@@ -122,7 +124,7 @@ export const adminService = {
   },
 
   async getTaskById(id: string) {
-    const response = await api.get<{sucess: boolean, data: Task}>(`/tasks/${id}`);
+    const response = await api.get<{ sucess: boolean, data: Task }>(`/tasks/${id}`);
     return response.data.data;
   },
 

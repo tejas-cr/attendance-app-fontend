@@ -5,6 +5,7 @@ import { User } from "@/services/auth-service";
 import { User2, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import AddUserModal from "./AddUserModal";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { NoTasksErrorPage } from "@/app/tasks/components/NoTaskErrorPage";
@@ -13,33 +14,22 @@ import { PageSkeleton } from "@/components/skeletons/PageSkeleton";
 export default function EmployeesPage() {
   const [users, setUsers] = useState<User[]>([]);
 
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["users"],
+    queryFn: () => adminService.getAllUsers(),
+  });
 
   useEffect(() => {
-      const fetchUsers = async () => {
-          try {
-              const { users } = await adminService.getAllUsers();
+    if (data) {
+      setUsers(data.users.filter((user) => user.role !== "ADMIN"));
+    }
+  }, [data]);
 
-              setUsers(Array.isArray(users) ? users : []);
-
-          } catch (error) {
-              console.error("Failed to fetch users", error);
-          } finally {
-              setTimeout(() => {
-                setLoading(false);
-              }, 2000);
-          }
-      };
-
-      fetchUsers();
-  }, []);
-
-  if (loading) return <PageSkeleton />
-  if (error) return <NoTasksErrorPage />
+  if (isLoading) return <PageSkeleton />
+  if (isError) return <NoTasksErrorPage />
 
   const seniors = users.filter((user) => user.role === 'SENIOR');
-  const juniors = users.filter((user) => user.role === 'JUNIOR');  
+  const juniors = users.filter((user) => user.role === 'JUNIOR');
 
   return (
     <div className="w-full min-h-screen p-8">
@@ -51,29 +41,29 @@ export default function EmployeesPage() {
       </div>
 
       {/* <div className="bg-white/90 backdrop-blur rounded-xs shadow-xl border border-slate-100 p-8"> */}
-        <div className="grid grid-cols-1 lg:grid-cols-2  gap-10 relative">
+      <div className="grid grid-cols-1 lg:grid-cols-2  gap-10 relative">
 
-          {/* <div className="hidden lg:block absolute left-1/2 top-0 h-full w-px bg-slate-200" /> */}
-          {/* Seniors */}
-          <Section
-            title="Senior Employees"
-            count={seniors.length}
-            accent="border-indigo-600">
-            {seniors.map((emp) => (
-              <EmployeeCard key={emp._id} {...emp} />
-            ))}
-          </Section>
+        {/* <div className="hidden lg:block absolute left-1/2 top-0 h-full w-px bg-slate-200" /> */}
+        {/* Seniors */}
+        <Section
+          title="Senior Employees"
+          count={seniors.length}
+          accent="border-indigo-600">
+          {seniors.map((emp) => (
+            <EmployeeCard key={emp._id} {...emp} />
+          ))}
+        </Section>
 
-          {/* Juniors */}
-          <Section
-            title="Junior Employees"
-            count={juniors.length}
-            accent="border-emerald-600">
-            {juniors.map((emp) => (
-              <EmployeeCard key={emp._id} {...emp} />
-            ))}
-          </Section>
-        </div>
+        {/* Juniors */}
+        <Section
+          title="Junior Employees"
+          count={juniors.length}
+          accent="border-emerald-600">
+          {juniors.map((emp) => (
+            <EmployeeCard key={emp._id} {...emp} />
+          ))}
+        </Section>
+      </div>
       {/* </div> */}
     </div>
   );
@@ -94,7 +84,7 @@ function Section({
     <div>
       <div className="flex items-center justify-start mb-12 gap-4">
         <h2
-        className={`text-xl font-extrabold text-slate-700 border-l-4 pl-4 ${accent}`}
+          className={`text-xl font-extrabold text-slate-700 border-l-4 pl-4 ${accent}`}
         >
           {title}
         </h2>

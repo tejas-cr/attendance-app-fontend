@@ -38,12 +38,12 @@ export const NavItems = () => {
       active: isNavItemActive(pathname, '/employees'),
       position: 'top',
     },
-    {
-      name: 'Settings',
-      href: '/settings',
-      icon: <Settings size={20} />,
-      active: isNavItemActive(pathname, '/settings'),
-      position: 'top',
-    },
+    // {
+    //   name: 'Settings',
+    //   href: '/settings',
+    //   icon: <Settings size={20} />,
+    //   active: isNavItemActive(pathname, '/settings'),
+    //   position: 'top',
+    // },
   ];
 };

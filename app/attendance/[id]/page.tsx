@@ -4,7 +4,7 @@ import { adminService } from "@/services/admin-services";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { UserAttendanceById } from "@/app/types/attendance";
-import { formatUnixTime, minutesToHours } from "@/app/utils/timeCoversions";
+import { minutesToHours } from "@/app/utils/timeCoversions";
 import { DailyLogs } from "../components/DailyLogs";
 import { Button } from "@/components/ui/button";
 
@@ -49,15 +49,15 @@ export default function EmployeePage() {
             <div className="grid grid-cols-2 gap-4 text-sm">
               <p><strong>Status:</strong> {attendance.today.status}</p>
               <p><strong>Total:</strong> {minutesToHours(attendance.today.totalWorkMinutes)}</p>
-              <p><strong>Clock In:</strong> {formatUnixTime(attendance.today.clockInTime) ?? "—"}</p>
-              <p><strong>Clock Out:</strong> {formatUnixTime(attendance.today.clockOutTime) ?? "—"}</p>
+              <p><strong>Clock In:</strong> {attendance.today.clockInTime ?? "—"}</p>
+              <p><strong>Clock Out:</strong> {attendance.today.clockOutTime ?? "—"}</p>
             </div>
           </section>
           <div className="flex gap-4">
             <Button
               onClick={() => setWeeklyCard(true)}
               className={`bg-primary text-white ${weeklyCard ? "bg-primary" : "bg-primary/50"}`}
-              >
+            >
               Weekly
             </Button>
             <Button
@@ -103,7 +103,7 @@ export default function EmployeePage() {
             </div>
 
             <DailyLogs logs={attendance.monthly.dailyLogs} />
-          </section>  
+          </section>
         )}
       </div>
     </div>

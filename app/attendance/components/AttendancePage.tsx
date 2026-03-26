@@ -17,7 +17,7 @@ export default function PresentPage() {
       try {
         const { users } = await adminService.getUserAttendance();
 
-        setUsers(Array.isArray(users) ? users : []);
+        setUsers(Array.isArray(users) ? users.filter((user) => user.role !== "ADMIN") : []);
 
       } catch (error) {
         console.error("Failed to fetch users", error);
@@ -28,7 +28,7 @@ export default function PresentPage() {
       }
     };
 
-      fetchUsers();
+    fetchUsers();
   }, []);
 
   const present = users.filter((user) => user.today.status === "PRESENT" || user.today.status === "HALF_DAY" || user.today.status === "LATE");
@@ -36,7 +36,7 @@ export default function PresentPage() {
 
   if (loading) {
     return <PageSkeleton />;
-  } 
+  }
 
   return (
     <div className="w-full min-h-screen  p-8">
@@ -45,27 +45,27 @@ export default function PresentPage() {
       </h1>
 
       {/* <div className="bg-white/90 backdrop-blur rounded-3xl shadow-xl border border-slate-100 p-8"> */}
-        <div className="grid grid-cols-1 lg:grid-cols-2  gap-10 relative">
+      <div className="grid grid-cols-1 lg:grid-cols-2  gap-10 relative">
 
-          {/* <div className="hidden lg:block absolute left-1/2 top-0 h-full w-px bg-slate-200" /> */}
-          <Section
-            title="Present Employees"
-            count={present.length}
-            accent="border-indigo-600">
-            {present.map((emp) => (
-              <EmployeeCard key={emp.id} {...emp} />
-            ))}
-          </Section>
+        {/* <div className="hidden lg:block absolute left-1/2 top-0 h-full w-px bg-slate-200" /> */}
+        <Section
+          title="Present Employees"
+          count={present.length}
+          accent="border-indigo-600">
+          {present.map((emp) => (
+            <EmployeeCard key={emp.id} {...emp} />
+          ))}
+        </Section>
 
-          <Section
-            title="Absent Employees"
-            count={absent.length}
-            accent="border-emerald-600">
-            {absent.map((emp) => (
-              <EmployeeCard key={emp.id} {...emp} />
-            ))}
-          </Section>
-        </div>
+        <Section
+          title="Absent Employees"
+          count={absent.length}
+          accent="border-emerald-600">
+          {absent.map((emp) => (
+            <EmployeeCard key={emp.id} {...emp} />
+          ))}
+        </Section>
+      </div>
       {/* </div> */}
     </div>
   );
@@ -88,7 +88,7 @@ function Section({
     <div>
       <div className="flex items-center justify-start mb-12 gap-4">
         <h2
-        className={`text-xl font-extrabold text-slate-700 border-l-4 pl-4 ${accent}`}
+          className={`text-xl font-extrabold text-slate-700 border-l-4 pl-4 ${accent}`}
         >
           {title}
         </h2>

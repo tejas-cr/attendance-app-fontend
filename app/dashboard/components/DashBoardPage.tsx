@@ -13,8 +13,6 @@ import { countAttendance } from "@/app/utils/countAttendance";
 import { AttendanceMember } from "@/app/types/attendance";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import AttendanceDonut from "./AttendanceDonut";
-import EmployeeBar from "./EmployeeBar";
 import { DashboardSkeleton } from "@/components/skeletons/DashboardSkeleton";
 
 export default function DashboardPage() {
@@ -30,8 +28,8 @@ export default function DashboardPage() {
         const { users } = await adminService.getAllUsers();
         const { members } = await adminService.getAttendance();
 
-        setUsers(Array.isArray(users) ? users : []);
-        setMembers(members);
+        setUsers(Array.isArray(users) ? users.filter((user) => user.role !== "ADMIN") : []);
+        setMembers(members.filter((member) => member.role !== "ADMIN"));
       } catch (error) {
         console.error("Failed to fetch users", error);
       } finally {
@@ -127,20 +125,6 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
           ))}
-        </div>
-
-        {/* Charts */}
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <AttendanceDonut
-            present={attendanceStats.present}
-            absent={attendanceStats.absent - 1}
-          />
-
-          <EmployeeBar
-            total={users.length - 1}
-            present={attendanceStats.present}
-            absent={attendanceStats.absent - 1}
-          />
         </div>
       </section>
     </main>

@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/auth-context";
-import Navbar from "@/components/navbar";
-import SideNav from "@/components/side-panel";
 import Providers from "@/context/providers";
 import { Arimo } from "next/font/google";
+import LayoutWrapper from "@/components/LayoutWrapper";
 
 
 
@@ -40,17 +39,9 @@ export default function RootLayout({
       >
         <AuthProvider>
           <Providers>
-            <div className="flex h-screen">
-              <SideNav />
-              
-              <div className="flex flex-col flex-1 overflow-hidden">
-                <Navbar/>
-                
-                <main className="flex-1 overflow-y-auto">
-                  {children}
-                </main>
-              </div>
-            </div>
+            <LayoutWrapper>
+              {children}
+            </LayoutWrapper>
           </Providers>
         </AuthProvider>
       </body>

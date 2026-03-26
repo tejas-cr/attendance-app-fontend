@@ -4,6 +4,7 @@ import { useState } from "react";
 import { adminService } from "@/services/admin-services";
 import { CreateUserRequest } from "@/services/admin-services";
 import { UserRole } from "@/app/types/attendance";
+import { useQueryClient } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +22,7 @@ const initialState: CreateUserRequest = {
   employeeId: "",
   name: "",
   email: "",
+  phone: "",
   role: "JUNIOR",
   teamId: "",
   password: "",
@@ -39,6 +41,7 @@ export default function AddUserForm({ onSuccess }: AddUserFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [tempPassword, setTempPassword] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   const updateField = (key: keyof CreateUserRequest, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -52,7 +55,7 @@ export default function AddUserForm({ onSuccess }: AddUserFormProps) {
 
     try {
       const employeeId = generateEmployeeId();
-      const res = await adminService.createUser({...form, employeeId: employeeId});
+      const res = await adminService.createUser({ ...form, employeeId: employeeId });
 
       if (res.success) {
         setSuccessMsg(res.message);
@@ -64,6 +67,7 @@ export default function AddUserForm({ onSuccess }: AddUserFormProps) {
       setError(err?.response?.data?.message || "Failed to create user");
     } finally {
       setLoading(false);
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     }
   };
 
@@ -72,57 +76,67 @@ export default function AddUserForm({ onSuccess }: AddUserFormProps) {
       onSubmit={handleSubmit}
       className="space-y-6"
     >
-        <div className="grid grid-cols-2 gap-4">
-          {/* Name */}
-          <Field label="Name">
-              <Input
-              value={form.name}
-              onChange={(e) => updateField("name", e.target.value)}
-              required
-              />
-          </Field>
-          {/* Email */}
-          <Field label="Email">
-              <Input
-              type="email"
-              value={form.email}
-              onChange={(e) => updateField("email", e.target.value)}
-              required
-              />
-          </Field>
+      <div className="grid grid-cols-2 gap-4">
+        {/* Name */}
+        <Field label="Name">
+          <Input
+            value={form.name}
+            onChange={(e) => updateField("name", e.target.value)}
+            required
+          />
+        </Field>
+        {/* Email */}
+        <Field label="Email">
+          <Input
+            type="email"
+            value={form.email}
+            onChange={(e) => updateField("email", e.target.value)}
+            required
+          />
+        </Field>
 
-        </div>
+      </div>
 
-    
-        <div className="grid grid-cols-2 gap-4">
-            {/* Role */}
-            <Field label="Role">
-                <Select
-                value={form.role}
-                onValueChange={(value) =>
-                    updateField("role", value as UserRole)
-                }
-                >
-                    <SelectTrigger>
-                        <SelectValue placeholder="Select role" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="SENIOR">Senior</SelectItem>
-                        <SelectItem value="JUNIOR">Junior</SelectItem>
-                    </SelectContent>
-                </Select>
-            </Field>
+      <div className="grid grid-cols-1 gap-4">
+        {/* Phone */}
+        <Field label="Phone">
+          <Input
+            value={form.phone}
+            onChange={(e) => updateField("phone", e.target.value)}
+            required
+          />
+        </Field>
+      </div>
 
-            {/* Team ID */}
-            <Field label="Team ID">
-                <Input
-                value={form.teamId}
-                onChange={(e) => updateField("teamId", e.target.value)}
-                required
-                />
-            </Field>
-        </div>
-        
+      <div className="grid grid-cols-2 gap-4">
+        {/* Role */}
+        <Field label="Role">
+          <Select
+            value={form.role}
+            onValueChange={(value) =>
+              updateField("role", value as UserRole)
+            }
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select role" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="SENIOR">Senior</SelectItem>
+              <SelectItem value="JUNIOR">Junior</SelectItem>
+            </SelectContent>
+          </Select>
+        </Field>
+
+        {/* Team ID */}
+        <Field label="Team ID">
+          <Input
+            value={form.teamId}
+            onChange={(e) => updateField("teamId", e.target.value)}
+            required
+          />
+        </Field>
+      </div>
+
       {/* Password */}
       <Field label="Password">
         <div className="relative">
@@ -137,12 +151,12 @@ export default function AddUserForm({ onSuccess }: AddUserFormProps) {
             onClick={() => setShowPassword((prev) => !prev)}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700"
             aria-label={showPassword ? "Hide password" : "Show password"}
-            >
-                {showPassword ? (
-                    <EyeOff className="h-5 w-5" />
-                ) : (
-                    <Eye className="h-5 w-5" />
-                )}
+          >
+            {showPassword ? (
+              <EyeOff className="h-5 w-5" />
+            ) : (
+              <Eye className="h-5 w-5" />
+            )}
           </button>
         </div>
       </Field>

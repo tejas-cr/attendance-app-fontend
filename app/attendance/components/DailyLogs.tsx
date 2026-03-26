@@ -1,5 +1,5 @@
 import { DailyLog } from "@/app/types/attendance";
-import { minutesToHours, formatUnixTime } from "@/app/utils/timeCoversions";
+import { minutesToHours } from "@/app/utils/timeCoversions";
 
 export function DailyLogs({ logs }: { logs: DailyLog[] }) {
   if (!logs.length) {
@@ -25,8 +25,8 @@ export function DailyLogs({ logs }: { logs: DailyLog[] }) {
                 {log.date} ({log.dayOfWeek})
               </td>
               <td>{log.status?.replaceAll("_", " ").toLowerCase()}</td>
-              <td>{formatUnixTime(log.clockInTime) ?? "—"}</td>
-              <td>{formatUnixTime(log.clockOutTime) ?? "—"}</td>
+              <td>{log.clockInTime ?? "—"}</td>
+              <td>{log.clockOutTime ?? "—"}</td>
               <td>{minutesToHours(log.totalWorkMinutes)}</td>
             </tr>
           ))}
