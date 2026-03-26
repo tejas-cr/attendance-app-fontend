@@ -1,10 +1,11 @@
-import { adminService } from "@/services/admin-services";
+'use server';
+
+import { createServerApi } from '@/lib/axios.server';
 
 export async function getEmployessAdmin() {
-  
-     const data= await adminService.getAllUsers();
-     console.log("data", data)
-     
-     return data
-    
+  const api = createServerApi();
+  const response = await api.get('/admin/users');
+
+  // `adminService.getAllUsers()` returns `response.data.data`, so keep shape compatible.
+  return response.data.data;
 }
