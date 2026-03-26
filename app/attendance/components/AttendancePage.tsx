@@ -31,7 +31,7 @@ export default function PresentPage() {
       fetchUsers();
   }, []);
 
-  const present = users.filter((user) => user.today.status === "PRESENT");
+  const present = users.filter((user) => user.today.status === "PRESENT" || user.today.status === "HALF_DAY" || user.today.status === "LATE");
   const absent = users.filter((user) => user.today.status === "ABSENT");
 
   if (loading) {
