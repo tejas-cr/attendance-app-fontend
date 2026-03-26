@@ -8,6 +8,7 @@ import UpdateUserForm from "../components/UpdateUserForm";
 import UpdateUserPassword from "../components/UpdateUserPassword";
 import { ArrowLeft } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { createPortal } from "react-dom";
 
 export default function EmployeePage() {
   const { id } = useParams();
@@ -25,6 +26,7 @@ export default function EmployeePage() {
     return <div className="p-8">Loading...</div>;
   }
 
+  if (error) return <div className="p-8 text-red-500">Failed to load employee.</div>;
   if (!employee) {
     return <div className="p-8">Employee not found</div>;
   }
@@ -54,14 +56,14 @@ export default function EmployeePage() {
             </div>
             <div className="flex gap-2">
               <RoleBadge level={employee.role} />
-              <TeamBadge variant={employee.teamId} />
+              <TeamBadge variant={employee.teamId!} />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 text-sm">
             <Detail label="Email" value={employee.email} full/>
-            <Detail label="Shift Start" value={employee.shiftStart} />
-            <Detail label="Shift End" value={employee.shiftEnd} />
+            <Detail label="Shift Start" value={employee.shiftStart!} />
+            <Detail label="Shift End" value={employee.shiftEnd!} />
             <Detail label="Created At" value={employee.createdAt} />
             <Detail label="Updated At" value={employee.updatedAt} />
           </div>
@@ -81,7 +83,7 @@ export default function EmployeePage() {
           </div>
         </div>
 
-        {isEditing && (
+        {isEditing && createPortal (
           <div className="absolute inset-0 z-50 flex items-center justify-center">
             {/* Dark backdrop */}
             <div
@@ -105,7 +107,8 @@ export default function EmployeePage() {
                 onSuccess={() => setIsEditing(false)}
               />
             </div>
-          </div>
+          </div>,
+          document.body
         )}
         {passwordModalOpen && (
           <div className="absolute inset-0 z-50 flex items-center justify-center">
