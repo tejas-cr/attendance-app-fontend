@@ -3,7 +3,7 @@ import { AttendanceMember } from "@/app/types/attendance";
 export function countAttendance(members: AttendanceMember[]) {
   return members.reduce(
     (acc, member) => {
-      if (member.attendanceStatus === "PRESENT") acc.present++;
+      if (member.attendanceStatus === "PRESENT" || member.attendanceStatus === "HALF_DAY" || member.attendanceStatus === "LATE") acc.present++;
       if (member.attendanceStatus === null) acc.absent++;
 
       if (member.isClockedIn) acc.clockedIn++;

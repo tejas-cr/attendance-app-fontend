@@ -1,5 +1,5 @@
 export type UserRole = "ADMIN" | "SENIOR" | "JUNIOR";
-export type AttendanceStatus = 'PRESENT' | 'ABSENT' | 'LATE' | 'HALF_DAY' | 'NOT_FULL_DAY' | null
+export type AttendanceStatus = 'PRESENT' | 'ABSENT' | 'LATE' | 'HALF_DAY'  | null
 
 export interface AttendanceMember {
   _id: string;
