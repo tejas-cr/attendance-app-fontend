@@ -1,7 +1,7 @@
 "use client";
 
 import { adminService } from "@/services/admin-services";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import UpdateUserForm from "../components/UpdateUserForm";
@@ -9,6 +9,7 @@ import UpdateUserPassword from "../components/UpdateUserPassword";
 import { ArrowLeft } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { createPortal } from "react-dom";
+import { UserByIdResponse } from "@/app/types/user";
 
 export default function EmployeePage() {
   const { id } = useParams();
@@ -16,17 +17,25 @@ export default function EmployeePage() {
   const [passwordModalOpen, setPasswordModalOpen] = useState(false)
   const router = useRouter();
 
-  const { data: employee, isLoading, error } = useQuery({
-    queryKey: ["employees", id],
-    queryFn: () => adminService.getUserById(id as string).then(res => res.data),
-    enabled: !!id, 
-  });
+  const [employee, setEmployee] = useState<UserByIdResponse["data"] | null>(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (!id) return;
+  const fetchData = async () => {
+    try {
+      const res = await adminService.getUserById(id as string);
+      setEmployee(res.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Failed to fetch employee", error);
+    }
+  };
+  fetchData();
+  }, [id]);
 
-  if (isLoading) {
+  if (loading) {
     return <div className="p-8">Loading...</div>;
   }
-
-  if (error) return <div className="p-8 text-red-500">Failed to load employee.</div>;
   if (!employee) {
     return <div className="p-8">Employee not found</div>;
   }
